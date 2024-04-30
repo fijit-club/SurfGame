@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GG.Infrastructure.Utils.Swipe;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
+    public SwipeListener swipeListener;
     public Rigidbody2D rb;
     public float speed;
     public bool camFollow;
@@ -15,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 direction;
     public bool isHolding;
     private float score=0;
+    private bool isMovingDiagonal;
+    private bool isMovingDown;
 
     private void Awake()
     {
@@ -22,12 +26,59 @@ public class PlayerController : MonoBehaviour
         mainCamera = Camera.main;
     }
 
+    //private void OnEnable()
+    //{
+    //    swipeListener.OnSwipe.AddListener(OnSwipe);
+    //}
+
+    //private void OnDisable()
+    //{
+    //    swipeListener.OnSwipe.RemoveListener(OnSwipe);
+    //}
+
     private void Start()
     {
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
         direction = Vector2.down;
+        isMovingDown = true;
     }
+
+    //private void OnSwipe(string swipe)
+    //{
+    //    if (swipe == "Right" && isMovingDown)
+    //    {
+    //        direction = new Vector2(1, -1);
+    //        isMovingDown = false;
+    //        isMovingDiagonal = true;
+    //    }
+    //    else if (swipe == "Left" && isMovingDown)
+    //    {
+    //        direction = new Vector2(-1, -1);
+    //        isMovingDown = false;
+    //        isMovingDiagonal = true;
+    //    }
+    //    else if(swipe=="Right" && isMovingDiagonal)
+    //    {
+    //        direction = new Vector2(0, -1);
+    //        isMovingDown = true;
+    //        isMovingDiagonal = false;
+    //    }
+    //    else if(swipe=="Left" && isMovingDiagonal)
+    //    {
+    //        direction = new Vector2(0, -1);
+    //        isMovingDown = true;
+    //        isMovingDiagonal = false;
+    //    }
+    //    else if (swipe == "Up")
+    //    {
+    //        direction = new Vector2(0, 0);
+    //    }
+    //    else if (swipe == "Down")
+    //    {
+    //        direction = new Vector2(0, -1);
+    //    }
+    //}
 
     private void FixedUpdate()
     {
@@ -77,7 +128,7 @@ public class PlayerController : MonoBehaviour
 
         float horizontalMove = currentTouchPosition.x - previousTouchPosition.x;
         float verticalMove = currentTouchPosition.y - previousTouchPosition.y;
-        if (horizontalMove > 0 ) 
+        if (horizontalMove > 0)
         {
             direction = new Vector2(1, -1);
         }
@@ -96,12 +147,29 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update()
-    { 
+    {
         if (Input.GetMouseButton(0))
         {
-           OnTouchDrag(Input.mousePosition);
+            OnTouchDrag(Input.mousePosition);
         }
         GameManager.Instance.UpdateScore();
+
+        //if (SwipeInput.Instance.SwipeRight)
+        //{
+        //    direction = new Vector2(1, -1);
+        //}
+        //else if (SwipeInput.Instance.SwipeLeft)
+        //{
+        //    direction = new Vector2(-1, -1);
+        //}
+        //else if (SwipeInput.Instance.SwipeUp)
+        //{
+        //    direction = Vector2.zero;
+        //}
+        //else if (SwipeInput.Instance.SwipeDown)
+        //{
+        //    direction = Vector2.down;
+        //}
     }
 
     public int GetScore()
