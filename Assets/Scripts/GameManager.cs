@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -9,10 +10,17 @@ public class GameManager : MonoBehaviour
     public GameObject[] lifes;
     private int remainingLife=3;
     public TextMeshProUGUI scoreTxt;
+    public TextMeshProUGUI coinTxt;
+    public TextMeshProUGUI highScoreTxt;
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
     }
 
     public void RedueHealth()
@@ -24,6 +32,7 @@ public class GameManager : MonoBehaviour
         }
         if (remainingLife == 0)
         {
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
             Time.timeScale = 0;
         }
     }
@@ -31,5 +40,12 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         scoreTxt.text = PlayerController.Instance.GetScore().ToString();
+        highScoreTxt.text = Bridge.GetInstance().thisPlayerInfo.highScore.ToString();
+        coinTxt.text = PlayerController.Instance.GetCoins().ToString();
+    }
+
+    public void Reload()
+    {
+        SceneManager.LoadScene(0);
     }
 }

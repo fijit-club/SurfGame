@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 direction;
     public bool isHolding;
     private float score=0;
+    private int coins;
+    private bool isFlying;
+
 
     private void Awake()
     {
@@ -34,7 +37,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
-        score += Time.deltaTime * 2;
+        score += Time.deltaTime * 10;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -47,10 +50,15 @@ public class PlayerController : MonoBehaviour
         {
             direction = Vector2.zero;
             GameManager.Instance.RedueHealth();
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
         }
         if (collision.CompareTag("Slow"))
         {
             StartCoroutine(SlowMove());
+        }
+        if (collision.CompareTag("Jump"))
+        {
+            StartCoroutine(SpeedMove());
         }
     }
 
@@ -59,6 +67,18 @@ public class PlayerController : MonoBehaviour
         speed = 50;
         yield return new WaitForSeconds(4f);
         speed = 100;
+    }
+
+    private IEnumerator SpeedMove()
+    {
+        isFlying = true;
+        speed = 250;
+        direction = Vector2.down;
+        GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(4f);
+        speed = 100;
+        GetComponent<BoxCollider2D>().enabled = true;
+        isFlying = false;
     }
 
     private void RestrictMovement()
@@ -73,6 +93,10 @@ public class PlayerController : MonoBehaviour
 
     public void OnTouchDrag(Vector2 currentTouchPosition)
     {
+        if (isFlying)
+        {
+            return;
+        }
         Vector2 previousTouchPosition = currentTouchPosition - (Vector2)Camera.main.ScreenToWorldPoint(currentTouchPosition);
 
         float horizontalMove = currentTouchPosition.x - previousTouchPosition.x;
@@ -109,6 +133,11 @@ public class PlayerController : MonoBehaviour
     public int GetScore()
     {
         return (int)score;
+    }
+
+    public int GetCoins()
+    {
+        return coins;
     }
 }
 

@@ -5,13 +5,12 @@ using System;
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager instance;
+    public static SoundManager Instance;
     public  SoundAudioClip[] gameSounds;
-    public SoundAudioClip[] randomCat;
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     private void Start()
@@ -57,17 +56,6 @@ public class SoundManager : MonoBehaviour
         return null;
     }
 
-    public void PlaySoundRandom()
-    {
-        SoundAudioClip soundAudioClip = randomCat[UnityEngine.Random.Range(0, randomCat.Length)];
-
-        GameObject gameObject = new GameObject("Sound", typeof(AudioSource));
-        AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-        audioSource.clip = (soundAudioClip.audioClip);
-        audioSource.Play();
-        Destroy(gameObject, audioSource.clip.length);
-    }
-
 
     public void Mute()
     {
@@ -94,18 +82,13 @@ public class SoundManager : MonoBehaviour
 
     public  enum Sounds
     {
-        FoodPick,
         BGM,
         LifeLost,
-        Bounce,
         BottonClick,
         PurchaseSuccess,
         PurchaseFail,
         EndGame,
-        NewSpawned,
-        PowerUpCollect,
-        RandomCat,
-        StartSound
+        SpeedBoost
     }
 
     [Serializable]
