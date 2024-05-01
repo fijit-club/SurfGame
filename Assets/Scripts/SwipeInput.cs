@@ -23,7 +23,7 @@ public class SwipeInput : MonoBehaviour
 
     private void Update()
     {
-        swipeLeft = swipeRight = swipeDown = swipeUp = false;
+        //swipeLeft = swipeRight = swipeDown = swipeUp = false;
 
         if (Input.touches.Length != 0)
         {
@@ -35,6 +35,7 @@ public class SwipeInput : MonoBehaviour
             else if(Input.touches[0].phase==TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled)
             {
                 startTouch = swipeDelta = Vector2.zero;
+                swipeLeft = swipeRight = swipeDown = swipeUp = false;
             }
         }
 
