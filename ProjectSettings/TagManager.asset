@@ -8,6 +8,8 @@ TagManager:
   - Obstacle
   - Slow
   - Jump
+  - Missile
+  - Monster
   layers:
   - Default
   - TransparentFX

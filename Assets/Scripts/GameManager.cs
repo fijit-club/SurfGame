@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreTxt;
     public TextMeshProUGUI coinTxt;
     public TextMeshProUGUI highScoreTxt;
+    public bool isGameOver;
 
     private void Awake()
     {
@@ -32,8 +33,7 @@ public class GameManager : MonoBehaviour
         }
         if (remainingLife == 0)
         {
-            SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
-            Time.timeScale = 0;
+            GameOver();
         }
     }
 
@@ -47,5 +47,15 @@ public class GameManager : MonoBehaviour
     public void Reload()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void GameOver()
+    {
+        if (!isGameOver)
+        {
+            isGameOver = true;
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
+            Time.timeScale = 0;
+        }
     }
 }

@@ -1,23 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
     public Rigidbody2D rb;
+    public float baseSpeed;
     public float speed;
     public bool camFollow;
     private Camera mainCamera;
     private float camHalfWidth;
     public Transform slowObsSpawnPos;
-    public float dragSpeed = 0.1f;
     private Vector2 direction;
-    public bool isHolding;
-    private float score=0;
+    private float score = 0;
     private int coins;
     private bool isFlying;
-
+    private float speedIncreaseInterval = 10f;
+    private float lastSpeedIncreaseTime;
+    public TextMeshProUGUI startTimerTxt;
+    public GameObject octopus;
+    private int slowingObjHitCount;
 
     private void Awake()
     {
@@ -27,9 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        float orthoSize = mainCamera.orthographicSize;
-        camHalfWidth = orthoSize / 2;
-        direction = Vector2.down;
+        StartCoroutine(StartTimer()); 
     }
 
     private void FixedUpdate()
@@ -37,7 +39,51 @@ public class PlayerController : MonoBehaviour
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
-        score += Time.deltaTime * 10;
+        score += (rb.velocity.magnitude*Time.deltaTime)*10;
+        if (Time.time - lastSpeedIncreaseTime >= speedIncreaseInterval)
+        {
+            IncreaseSpeed();
+            lastSpeedIncreaseTime = Time.time;
+        }
+    }
+
+    private IEnumerator StartTimer()
+    {
+        float orthoSize = mainCamera.orthographicSize;
+        camHalfWidth = orthoSize / 2;
+
+        int countdownValue = 3;
+        while (countdownValue > 0)
+        {
+            startTimerTxt.text = countdownValue.ToString();
+            yield return new WaitForSeconds(1);
+            countdownValue--;
+        }
+        startTimerTxt.text = "GO!";
+        yield return new WaitForSeconds(1);
+        startTimerTxt.text = null;
+        direction = Vector2.down;
+        speed = baseSpeed;
+        lastSpeedIncreaseTime = Time.time;
+    }
+
+    private void IncreaseSpeed()
+    {
+        baseSpeed += 10f;
+        speed = baseSpeed;
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            OnTouchDrag(Input.mousePosition);
+        }
+        GameManager.Instance.UpdateScore();
+        if (slowingObjHitCount >= 2)
+        {
+            octopus.SetActive(true);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -51,44 +97,58 @@ public class PlayerController : MonoBehaviour
             direction = Vector2.zero;
             GameManager.Instance.RedueHealth();
             SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
+            StartCoroutine(DimColourOnHit());
         }
         if (collision.CompareTag("Slow"))
         {
             StartCoroutine(SlowMove());
+            slowingObjHitCount++;
         }
         if (collision.CompareTag("Jump"))
         {
             StartCoroutine(SpeedMove());
         }
+        if (collision.CompareTag("Monster"))
+        {
+            GameManager.Instance.GameOver();
+        }
     }
 
     private IEnumerator SlowMove()
     {
-        speed = 50;
+        speed = baseSpeed/2;
         yield return new WaitForSeconds(4f);
-        speed = 100;
+        speed = baseSpeed;
     }
 
     private IEnumerator SpeedMove()
     {
         isFlying = true;
-        speed = 250;
+        speed = baseSpeed*2;
         direction = Vector2.down;
         GetComponent<BoxCollider2D>().enabled = false;
         yield return new WaitForSeconds(4f);
-        speed = 100;
+        speed = baseSpeed;
         GetComponent<BoxCollider2D>().enabled = true;
         isFlying = false;
     }
 
     private void RestrictMovement()
     {
-        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth+0.5f, camHalfWidth-0.5f), transform.position.y);
+        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
     }
 
     private void FollowPlayer()
     {
         slowObsSpawnPos.position = new Vector2(slowObsSpawnPos.position.x, transform.position.y - 12f);
+        if (slowingObjHitCount >= 2)
+        {
+            octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
+        }
+        else
+        {
+            octopus.transform.position = new Vector2(octopus.transform.position.x, transform.position.y + 10f);
+        }
     }
 
     public void OnTouchDrag(Vector2 currentTouchPosition)
@@ -101,7 +161,7 @@ public class PlayerController : MonoBehaviour
 
         float horizontalMove = currentTouchPosition.x - previousTouchPosition.x;
 
-        float verticalMove = (currentTouchPosition.y - previousTouchPosition.y) - transform.position.y + 3;
+        float verticalMove = (currentTouchPosition.y - previousTouchPosition.y);
 
         if (horizontalMove > 0)
         {
@@ -121,13 +181,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Update()
+    private IEnumerator DimColourOnHit()
     {
-        if (Input.GetMouseButton(0))
+        foreach (Transform child in transform)
         {
-            OnTouchDrag(Input.mousePosition);
+            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                Color color = spriteRenderer.color;
+                color.a = 0.5f;
+                spriteRenderer.color = color;
+            }
         }
-            GameManager.Instance.UpdateScore();
+        yield return new WaitForSeconds(2f);
+        foreach (Transform child in transform)
+        {
+            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                Color color = spriteRenderer.color;
+                color.a = 1f;
+                spriteRenderer.color = color;
+            }
+        }
     }
 
     public int GetScore()
@@ -140,5 +216,6 @@ public class PlayerController : MonoBehaviour
         return coins;
     }
 }
+
 
 
