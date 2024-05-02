@@ -21,7 +21,9 @@ public class PlayerController : MonoBehaviour
     private float lastSpeedIncreaseTime;
     public TextMeshProUGUI startTimerTxt;
     public GameObject octopus;
-    private int slowingObjHitCount;
+    public int hitCount;
+    private bool isChasing;
+    private Coroutine chasingCoroutine;
 
     private void Awake()
     {
@@ -80,7 +82,7 @@ public class PlayerController : MonoBehaviour
             OnTouchDrag(Input.mousePosition);
         }
         GameManager.Instance.UpdateScore();
-        if (slowingObjHitCount >= 2)
+        if (hitCount >= 2)
         {
             octopus.SetActive(true);
         }
@@ -94,6 +96,10 @@ public class PlayerController : MonoBehaviour
         }
         if (collision.CompareTag("Obstacle"))
         {
+            if (isChasing)
+            {
+                hitCount++;
+            }
             direction = Vector2.zero;
             GameManager.Instance.RedueHealth();
             SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
@@ -101,8 +107,13 @@ public class PlayerController : MonoBehaviour
         }
         if (collision.CompareTag("Slow"))
         {
+            if (chasingCoroutine != null)
+            {
+                StopCoroutine(chasingCoroutine);
+            }
             StartCoroutine(SlowMove());
-            slowingObjHitCount++;
+            chasingCoroutine = StartCoroutine(IsChaseing());
+            hitCount++;
         }
         if (collision.CompareTag("Jump"))
         {
@@ -141,15 +152,32 @@ public class PlayerController : MonoBehaviour
     private void FollowPlayer()
     {
         slowObsSpawnPos.position = new Vector2(slowObsSpawnPos.position.x, transform.position.y - 12f);
-        if (slowingObjHitCount >= 2)
+        if (isChasing)
         {
+            octopus.GetComponent<EnemyFollow>().distance = 1.5f;
             octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
         }
         else
         {
-            octopus.transform.position = new Vector2(octopus.transform.position.x, transform.position.y + 10f);
+            octopus.GetComponent<EnemyFollow>().distance = 7;
+            octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
+        }
+        if (hitCount >= 2)
+        {
+            octopus.GetComponent<EnemyFollow>().distance = -1;
+            octopus.GetComponent<EnemyFollow>().followSpeed = 1.5f;
+            octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
         }
     }
+
+    private IEnumerator IsChaseing()
+    {
+        isChasing = true;
+        yield return new WaitForSeconds(10f);
+        isChasing = false;
+        hitCount = 0;
+    }
+
 
     public void OnTouchDrag(Vector2 currentTouchPosition)
     {
