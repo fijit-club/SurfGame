@@ -164,8 +164,8 @@ public class PlayerController : MonoBehaviour
         }
         if (hitCount >= 2)
         {
-            octopus.GetComponent<EnemyFollow>().distance = -1;
-            octopus.GetComponent<EnemyFollow>().followSpeed = 1.5f;
+            octopus.GetComponent<EnemyFollow>().distance = -0.75f;
+            octopus.GetComponent<EnemyFollow>().followSpeed = 2f;
             octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
         }
     }
