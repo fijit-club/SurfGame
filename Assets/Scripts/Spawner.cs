@@ -11,6 +11,9 @@ public class Spawner : MonoBehaviour
     public Transform[] obsSpawnPos;
     public Transform[] slowObjSpawnPos;
     public Transform[] wasteObjSpawnPos;
+    public GameObject bgPref;
+    public Transform previousBg;
+    public float bgLength;
 
     private Vector3 lastPlayerPosition;
 
@@ -29,6 +32,16 @@ public class Spawner : MonoBehaviour
         Shop.onGameBegin -= GameBegin;
     }
 
+    private void Update()
+    {
+        float distance = previousBg.position.y - Shop.Instance.playerPrefabs[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer].transform.position.y;
+        if (distance >= 2)
+        {
+            SpawnBG();
+        }
+        print(distance + "Dis");
+    }
+
     private void GameBegin()
     {
         lastPlayerPosition = PlayerController.Instance.transform.position;
@@ -39,6 +52,16 @@ public class Spawner : MonoBehaviour
     {
         GameObject obj = Instantiate(obs, pos.position, Quaternion.identity, transform);
     }
+
+    public void SpawnBG()
+    {
+        Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLength, 128);
+        GameObject newBG = Instantiate(bgPref, nextSpawnPosition, Quaternion.identity);
+        newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+        previousBg = newBG.transform;
+    }
+
+
 
     private IEnumerator Spawn()
     {
