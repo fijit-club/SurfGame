@@ -26,9 +26,11 @@ public class PlayerController : MonoBehaviour
     public int hitCount;
     public bool isChasing;
     private Coroutine chasingCoroutine;
+    public GameObject tral;
     public GameObject straightImgae;
     public GameObject rightImgae;
     public GameObject leftImgae;
+    public GameObject jumpImgae;
     private bool canTouchControll;
 
     private void Awake()
@@ -162,11 +164,21 @@ public class PlayerController : MonoBehaviour
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        GetComponent<BoxCollider2D>().enabled = false;
-        yield return new WaitForSeconds(4f);
+        transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = false;
+        straightImgae.SetActive(false);
+        leftImgae.SetActive(false);
+        rightImgae.SetActive(false);
+        jumpImgae.SetActive(true);
+        tral.SetActive(false);
+        yield return new WaitForSeconds(3f);
         speed = baseSpeed;
-        GetComponent<BoxCollider2D>().enabled = true;
+        transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
         isFlying = false;
+        straightImgae.SetActive(true);
+        leftImgae.SetActive(false);
+        rightImgae.SetActive(false);
+        jumpImgae.SetActive(false);
+        tral.SetActive(true);
     }
 
     private void RestrictMovement()
