@@ -88,7 +88,8 @@ public class SoundManager : MonoBehaviour
         PurchaseSuccess,
         PurchaseFail,
         EndGame,
-        SpeedBoost
+        SpeedBoost,
+        CoinPick
     }
 
     [Serializable]

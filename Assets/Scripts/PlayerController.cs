@@ -6,6 +6,8 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
+    public int scoreMultiplier;
+    public int coinMultiplier;
     public Rigidbody2D rb;
     public float baseSpeed;
     public float speed;
@@ -22,8 +24,12 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI startTimerTxt;
     public GameObject octopus;
     public int hitCount;
-    private bool isChasing;
+    public bool isChasing;
     private Coroutine chasingCoroutine;
+    public GameObject straightImgae;
+    public GameObject rightImgae;
+    public GameObject leftImgae;
+    private bool canTouchControll;
 
     private void Awake()
     {
@@ -31,9 +37,20 @@ public class PlayerController : MonoBehaviour
         mainCamera = Camera.main;
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        StartCoroutine(StartTimer()); 
+        Shop.onGameBegin += GameBegin;
+    }
+
+    private void OnDisable()
+    {
+        Shop.onGameBegin -= GameBegin;
+    }
+
+    private void GameBegin()
+    {
+        StartCoroutine(StartTimer());
+        straightImgae.SetActive(true);
     }
 
     private void FixedUpdate()
@@ -41,7 +58,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
-        score += (rb.velocity.magnitude*Time.deltaTime)*10;
+        score += (rb.velocity.magnitude*Time.deltaTime)*10*scoreMultiplier;
         if (Time.time - lastSpeedIncreaseTime >= speedIncreaseInterval)
         {
             IncreaseSpeed();
@@ -63,6 +80,7 @@ public class PlayerController : MonoBehaviour
         }
         startTimerTxt.text = "GO!";
         yield return new WaitForSeconds(1);
+        canTouchControll = true;
         startTimerTxt.text = null;
         direction = Vector2.down;
         speed = baseSpeed;
@@ -123,12 +141,19 @@ public class PlayerController : MonoBehaviour
         {
             GameManager.Instance.GameOver();
         }
+        if (collision.CompareTag("Waste"))
+        {
+            coins += coinMultiplier;
+            GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
+            Destroy(collision.gameObject);
+        }
     }
 
     private IEnumerator SlowMove()
     {
         speed = baseSpeed/2;
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
         speed = baseSpeed;
     }
 
@@ -147,6 +172,14 @@ public class PlayerController : MonoBehaviour
     private void RestrictMovement()
     {
         transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
+
+        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f)
+        {
+            straightImgae.SetActive(true);
+            rightImgae.SetActive(false);
+            leftImgae.SetActive(false);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
+        }
     }
 
     private void FollowPlayer()
@@ -154,26 +187,22 @@ public class PlayerController : MonoBehaviour
         slowObsSpawnPos.position = new Vector2(slowObsSpawnPos.position.x, transform.position.y - 12f);
         if (isChasing)
         {
-            octopus.GetComponent<EnemyFollow>().distance = 1.5f;
-            octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
+            octopus.GetComponent<EnemyFollow>().MoveTowards(transform.GetChild(1));
         }
         else
         {
-            octopus.GetComponent<EnemyFollow>().distance = 7;
-            octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
+            octopus.GetComponent<EnemyFollow>().MoveTowards(transform.GetChild(2));
         }
         if (hitCount >= 2)
         {
-            octopus.GetComponent<EnemyFollow>().distance = -0.75f;
-            octopus.GetComponent<EnemyFollow>().followSpeed = 2f;
-            octopus.transform.position = new Vector2(octopus.transform.position.x, octopus.transform.position.y);
+            octopus.GetComponent<EnemyFollow>().MoveTowards(transform);
         }
     }
 
     private IEnumerator IsChaseing()
     {
         isChasing = true;
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(8f);
         isChasing = false;
         hitCount = 0;
     }
@@ -181,7 +210,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnTouchDrag(Vector2 currentTouchPosition)
     {
-        if (isFlying)
+        if (isFlying || !canTouchControll)
         {
             return;
         }
@@ -194,18 +223,34 @@ public class PlayerController : MonoBehaviour
         if (horizontalMove > 0)
         {
             direction = new Vector2(1, -1);
+            straightImgae.SetActive(false);
+            leftImgae.SetActive(false);
+            rightImgae.SetActive(true);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 50);
         }
         else if (horizontalMove < 0)
         {
             direction = new Vector2(-1, -1);
+            straightImgae.SetActive(false);
+            leftImgae.SetActive(true);
+            rightImgae.SetActive(false);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -50);
         }
         else if (verticalMove < 0)
         {
             direction = new Vector2(0, -1);
+            straightImgae.SetActive(true);
+            leftImgae.SetActive(false);
+            rightImgae.SetActive(false);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         }
         else if (verticalMove > 0)
         {
             direction = new Vector2(0, 0);
+            straightImgae.SetActive(true);
+            leftImgae.SetActive(false);
+            rightImgae.SetActive(false);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 

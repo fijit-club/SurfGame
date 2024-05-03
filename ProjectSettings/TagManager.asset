@@ -10,6 +10,7 @@ TagManager:
   - Jump
   - Missile
   - Monster
+  - Waste
   layers:
   - Default
   - TransparentFX

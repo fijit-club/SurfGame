@@ -10,9 +10,9 @@ public class CameraController : MonoBehaviour
 
     private void FollowPlayer()
     {
-        if (PlayerController.Instance.camFollow)
+        if (Shop.Instance.playerPrefabs[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer].GetComponent<PlayerController>().camFollow)
         {
-            transform.position = new Vector3(0,PlayerController.Instance.transform.position.y, -10);
+            transform.position = new Vector3(0, Shop.Instance.playerPrefabs[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer].transform.position.y, -10);
         }
     }
 }

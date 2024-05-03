@@ -4,18 +4,35 @@ using UnityEngine;
 
 public class EnemyFollow : MonoBehaviour
 {
+    public static EnemyFollow Instance;
     public Transform player;
-    public float followSpeed = 2f;
-    public float distance = 2f;
+    public float followSpeed = 6f;
 
-    void Update()
+    private void OnEnable()
     {
-        if (player != null)
-        {
-            Vector2 direction = player.position - transform.position;
-            direction.Normalize();
-            Vector2 targetPosition = (Vector2)player.position - direction;
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(targetPosition.x,targetPosition.y+distance), followSpeed * Time.deltaTime);
-        }
+        Shop.onGameBegin += GameBegin;
+    }
+
+    private void OnDisable()
+    {
+        Shop.onGameBegin -= GameBegin;
+    }
+
+    private void GameBegin()
+    {
+        player = Shop.Instance.playerPrefabs[Shop.Instance.selectedPlayer].transform;
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void MoveTowards(Transform pos)
+    {
+        Vector2 direction = pos.position - transform.position;
+        direction.Normalize();
+        Vector2 targetPosition = (Vector2)pos.position - direction;
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, followSpeed * Time.deltaTime);
     }
 }

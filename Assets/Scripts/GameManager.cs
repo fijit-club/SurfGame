@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreTxt;
     public TextMeshProUGUI coinTxt;
     public TextMeshProUGUI highScoreTxt;
+    public GameObject coinPref;
+    public RectTransform parent;
+    public RectTransform coinDestination;
+    public GameObject gameOVerScreen;
     public bool isGameOver;
 
     private void Awake()
@@ -19,7 +23,17 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    private void OnEnable()
+    {
+        Shop.onGameBegin += GameBegin;
+    }
+
+    private void OnDisable()
+    {
+        Shop.onGameBegin -= GameBegin;
+    }
+
+    private void GameBegin()
     {
         SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
     }
@@ -55,7 +69,41 @@ public class GameManager : MonoBehaviour
         {
             isGameOver = true;
             SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
+            gameOVerScreen.SetActive(true);
             Time.timeScale = 0;
+        }
+    }
+
+    private string ChangeCoinsFormate(int coins)
+    {
+        if (coins >= 10000)
+        {
+            return (coins / 1000).ToString() + "K";
+        }
+        else
+        {
+            return coins.ToString();
+        }
+    }
+
+    public void ChangeForamte(TextMeshProUGUI text, int totalCoins)
+    {
+        text.text = ChangeCoinsFormate(totalCoins);
+    }
+
+    public void CoinAnimation(int count, Vector2 pos)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            GameObject coin = Instantiate(coinPref, parent);
+            coin.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(pos);
+            float delayTime = 0.1f;
+            LeanTween.delayedCall(delayTime, () =>
+            {
+                LeanTween.move(coin, coinDestination.position, 0.5f)
+                         .setEase(LeanTweenType.animationCurve)
+                         .setOnComplete(() => { Destroy(coin); Bridge.GetInstance().UpdateCoins(1); });
+            });
         }
     }
 }

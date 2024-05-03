@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System;
 using System.Runtime.InteropServices;
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 using TMPro;
 //using LightDev;
 
@@ -20,8 +20,7 @@ public class NativeAPI
 [Serializable]
     public class SaveData
     {
-        public int valueVehicle;
-        public int valueMap;
+    public int selectedPlayer;
     }
 
 
@@ -131,21 +130,21 @@ public class NativeAPI
         }
 
 
-//    public void SaveData(int value)
-//    {
-//        thisPlayerInfo.data.saveData.valueVehicle = value;
+    public void SaveData(int value)
+    {
+        thisPlayerInfo.data.saveData.selectedPlayer = value;
 
-//        string jsonData = JsonConvert.SerializeObject(thisPlayerInfo.data.saveData);
+        string jsonData = JsonConvert.SerializeObject(thisPlayerInfo.data.saveData);
 
-//        print("DATA BEFORE SENDING: " + jsonData);
+        print("DATA BEFORE SENDING: " + jsonData);
 
-//#if UNITY_WEBGL && !UNITY_EDITOR
-//                setSavedata(jsonData);
-//#endif
+#if UNITY_WEBGL && !UNITY_EDITOR
+                    setSavedata(jsonData);
+#endif
 
-//        print("DATA AFTER SENDING: " + jsonData);
+        print("DATA AFTER SENDING: " + jsonData);
 
-//    }
+    }
 
     private void Awake()
         {
