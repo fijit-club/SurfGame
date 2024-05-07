@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public static Action onCountdownFinish;
     public GameObject[] lifes;
     private int remainingLife=3;
     public TextMeshProUGUI scoreTxt;
@@ -16,6 +18,7 @@ public class GameManager : MonoBehaviour
     public RectTransform parent;
     public RectTransform coinDestination;
     public GameObject gameOVerScreen;
+    public TextMeshProUGUI startTimerTxt;
     public bool isGameOver;
 
     private void Awake()
@@ -23,19 +26,25 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    private void OnEnable()
+    private IEnumerator StartTimer()
     {
-        Shop.onGameBegin += GameBegin;
+        int countdownValue = 3;
+        while (countdownValue > 0)
+        {
+            startTimerTxt.text = countdownValue.ToString();
+            yield return new WaitForSeconds(1);
+            countdownValue--;
+        }
+        startTimerTxt.text = "GO!";
+        yield return new WaitForSeconds(1);
+        startTimerTxt.text = null;
+        onCountdownFinish?.Invoke();
     }
 
-    private void OnDisable()
-    {
-        Shop.onGameBegin -= GameBegin;
-    }
-
-    private void GameBegin()
+    private void Start()
     {
         SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+        StartCoroutine(StartTimer());
     }
 
     public void RedueHealth()
@@ -72,23 +81,6 @@ public class GameManager : MonoBehaviour
             gameOVerScreen.SetActive(true);
             Time.timeScale = 0;
         }
-    }
-
-    private string ChangeCoinsFormate(int coins)
-    {
-        if (coins >= 10000)
-        {
-            return (coins / 1000).ToString() + "K";
-        }
-        else
-        {
-            return coins.ToString();
-        }
-    }
-
-    public void ChangeForamte(TextMeshProUGUI text, int totalCoins)
-    {
-        text.text = ChangeCoinsFormate(totalCoins);
     }
 
     public void CoinAnimation(int count, Vector2 pos)

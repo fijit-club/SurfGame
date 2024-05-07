@@ -1,27 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using System;
+using Photon.Pun;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
+    public static Action onCamFollow;
     public int scoreMultiplier;
     public int coinMultiplier;
     public Rigidbody2D rb;
     public float baseSpeed;
     public float speed;
-    public bool camFollow;
     private Camera mainCamera;
     private float camHalfWidth;
-    public Transform slowObsSpawnPos;
     private Vector2 direction;
     private float score = 0;
     private int coins;
     private bool isFlying;
     private float speedIncreaseInterval = 10f;
     private float lastSpeedIncreaseTime;
-    public TextMeshProUGUI startTimerTxt;
     public GameObject octopus;
     public int hitCount;
     public bool isChasing;
@@ -41,22 +40,39 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        Shop.onGameBegin += GameBegin;
+        GameManager.onCountdownFinish += GameBegin;
     }
 
     private void OnDisable()
     {
-        Shop.onGameBegin -= GameBegin;
+        GameManager.onCountdownFinish -= GameBegin;
     }
 
     private void GameBegin()
     {
-        StartCoroutine(StartTimer());
+        canTouchControll = true;
+        onCamFollow?.Invoke();
+        GameManager.Instance.startTimerTxt.text = null;
+        direction = Vector2.down;
+        speed = baseSpeed;
+        lastSpeedIncreaseTime = Time.time;
+        octopus= GameObject.FindWithTag("Monster");
+    }
+
+    private void Start()
+    {
+        float orthoSize = mainCamera.orthographicSize;
+        camHalfWidth = orthoSize / 2;
         straightImgae.SetActive(true);
     }
 
     private void FixedUpdate()
     {
+        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
@@ -68,35 +84,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator StartTimer()
-    {
-        float orthoSize = mainCamera.orthographicSize;
-        camHalfWidth = orthoSize / 2;
-
-        int countdownValue = 3;
-        while (countdownValue > 0)
-        {
-            startTimerTxt.text = countdownValue.ToString();
-            yield return new WaitForSeconds(1);
-            countdownValue--;
-        }
-        startTimerTxt.text = "GO!";
-        yield return new WaitForSeconds(1);
-        canTouchControll = true;
-        startTimerTxt.text = null;
-        direction = Vector2.down;
-        speed = baseSpeed;
-        lastSpeedIncreaseTime = Time.time;
-    }
 
     private void IncreaseSpeed()
     {
-        baseSpeed += 10f;
+        baseSpeed += 20f;
         speed = baseSpeed;
     }
 
     private void Update()
     {
+        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         if (Input.GetMouseButton(0))
         {
             OnTouchDrag(Input.mousePosition);
@@ -110,10 +111,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Follow"))
-        {
-            camFollow = true;
-        }
         if (collision.CompareTag("Obstacle"))
         {
             if (isChasing)
@@ -145,7 +142,7 @@ public class PlayerController : MonoBehaviour
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += coinMultiplier;
+            coins += 5*coinMultiplier;
             GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
@@ -164,7 +161,7 @@ public class PlayerController : MonoBehaviour
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = false;
+        transform.GetChild(0).gameObject.SetActive(false);
         straightImgae.SetActive(false);
         leftImgae.SetActive(false);
         rightImgae.SetActive(false);
@@ -172,7 +169,7 @@ public class PlayerController : MonoBehaviour
         tral.SetActive(false);
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
-        transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
+        transform.GetChild(0).gameObject.SetActive(true);
         isFlying = false;
         straightImgae.SetActive(true);
         leftImgae.SetActive(false);
@@ -185,7 +182,7 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
 
-        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f)
+        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
         {
             straightImgae.SetActive(true);
             rightImgae.SetActive(false);
@@ -196,7 +193,10 @@ public class PlayerController : MonoBehaviour
 
     private void FollowPlayer()
     {
-        slowObsSpawnPos.position = new Vector2(slowObsSpawnPos.position.x, transform.position.y - 12f);
+        if (octopus == null)
+        {
+            return;
+        }
         if (isChasing)
         {
             octopus.GetComponent<EnemyFollow>().MoveTowards(transform.GetChild(1));
@@ -268,8 +268,10 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DimColourOnHit()
     {
+
         foreach (Transform child in transform)
         {
+            transform.GetChild(0).gameObject.SetActive(false);
             SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
             if (spriteRenderer != null)
             {
@@ -279,6 +281,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         yield return new WaitForSeconds(2f);
+        transform.GetChild(0).gameObject.SetActive(true);
         foreach (Transform child in transform)
         {
             SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
