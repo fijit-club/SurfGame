@@ -81,9 +81,7 @@ MonoBehaviour:
   rb: {fileID: 101425352073361503}
   baseSpeed: 100
   speed: 0
-  octopus: {fileID: 0}
-  hitCount: 0
-  isChasing: 0
+  octopus: {fileID: 7156351447078555155, guid: b04510d9887cebb40b6a963c9d6b0783, type: 3}
   tral: {fileID: 101425354091482343}
   straightImgae: {fileID: 101425352944830574}
   rightImgae: {fileID: 101425353952355331}

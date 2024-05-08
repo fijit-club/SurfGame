@@ -5346,9 +5346,7 @@ MonoBehaviour:
   rb: {fileID: 7999991626734637295}
   baseSpeed: 100
   speed: 0
-  octopus: {fileID: 0}
-  hitCount: 0
-  isChasing: 0
+  octopus: {fileID: 7156351447078555155, guid: b04510d9887cebb40b6a963c9d6b0783, type: 3}
   tral: {fileID: 7999991627337389626}
   straightImgae: {fileID: 7999991627151460938}
   rightImgae: {fileID: 7999991627084163314}

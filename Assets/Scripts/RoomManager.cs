@@ -56,6 +56,11 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void JoinRandonRoom()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
+
     public void StartGame()
     {
         if (PhotonNetwork.IsMasterClient)

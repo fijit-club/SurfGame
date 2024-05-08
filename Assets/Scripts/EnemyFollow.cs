@@ -8,21 +8,6 @@ public class EnemyFollow : MonoBehaviour
     public Transform player;
     public float followSpeed = 6f;
 
-    //private void OnEnable()
-    //{
-    //    Shop.onGameBegin += GameBegin;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    Shop.onGameBegin -= GameBegin;
-    //}
-
-    //private void GameBegin()
-    //{
-    //    player = SpawnerPhoton.Instance.playerPrefab[Shop.Instance.selectedPlayer].transform;
-    //}
-
     private void Start()
     {
         player = SpawnerPhoton.Instance.playerPrefab[Shop.Instance.selectedPlayer].transform;

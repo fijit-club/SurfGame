@@ -3,34 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Photon.Pun;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
+
     public static Action onCamFollow;
+
     public int scoreMultiplier;
     public int coinMultiplier;
     public Rigidbody2D rb;
     public float baseSpeed;
     public float speed;
+
     private Camera mainCamera;
     private float camHalfWidth;
     private Vector2 direction;
     private float score = 0;
     private int coins;
-    private bool isFlying;
     private float speedIncreaseInterval = 10f;
     private float lastSpeedIncreaseTime;
-    public GameObject octopus;
-    public int hitCount;
-    public bool isChasing;
+    private int hitCount;
+
     private Coroutine chasingCoroutine;
+
+    public GameObject octopus;
     public GameObject tral;
     public GameObject straightImgae;
     public GameObject rightImgae;
     public GameObject leftImgae;
     public GameObject jumpImgae;
+
     private bool canTouchControll;
+    private bool isChasing;
+    private bool isFlying;
+    private bool hitWithIsland;
+
+    private TextMeshProUGUI scoreTxt;
+    private TextMeshProUGUI coinTxt;
+    private TextMeshProUGUI highScoreTxt;
+    private List<GameObject> lifes = new List<GameObject>();
+    private int remainingLife = 3;
+    private GameObject healthSymbols;
 
     private void Awake()
     {
@@ -64,6 +79,17 @@ public class PlayerController : MonoBehaviour
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
         straightImgae.SetActive(true);
+        Instantiate(octopus);
+
+        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
+        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
+        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        healthSymbols = GameObject.Find("HealthSymbols");
+        print(healthSymbols.transform.GetChild(0).name);
+        for (int i = 0; i < 3; i++)
+        {
+            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
+        }
     }
 
     private void FixedUpdate()
@@ -97,12 +123,15 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-
+        UpdateScore();
         if (Input.GetMouseButton(0))
         {
             OnTouchDrag(Input.mousePosition);
+            if (hitWithIsland)
+            {
+                StartCoroutine(OffCollider());
+            }
         }
-        GameManager.Instance.UpdateScore();
         if (hitCount >= 2)
         {
             octopus.SetActive(true);
@@ -111,6 +140,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         if (collision.CompareTag("Obstacle"))
         {
             if (isChasing)
@@ -118,9 +152,9 @@ public class PlayerController : MonoBehaviour
                 hitCount++;
             }
             direction = Vector2.zero;
-            GameManager.Instance.RedueHealth();
+            RedueHealth();
             SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
-            StartCoroutine(DimColourOnHit());
+            hitWithIsland = true;
         }
         if (collision.CompareTag("Slow"))
         {
@@ -248,49 +282,46 @@ public class PlayerController : MonoBehaviour
             rightImgae.SetActive(false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -50);
         }
-        else if (verticalMove < 0)
-        {
-            direction = new Vector2(0, -1);
-            straightImgae.SetActive(true);
-            leftImgae.SetActive(false);
-            rightImgae.SetActive(false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if (verticalMove > 0)
-        {
-            direction = new Vector2(0, 0);
-            straightImgae.SetActive(true);
-            leftImgae.SetActive(false);
-            rightImgae.SetActive(false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        }
+        //else if (verticalMove < 0)
+        //{
+        //    direction = new Vector2(0, -1);
+        //    straightImgae.SetActive(true);
+        //    leftImgae.SetActive(false);
+        //    rightImgae.SetActive(false);
+        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
+        //}
+        //else if (verticalMove > 0)
+        //{
+        //    direction = new Vector2(0, 0);
+        //    straightImgae.SetActive(true);
+        //    leftImgae.SetActive(false);
+        //    rightImgae.SetActive(false);
+        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
+        //}
     }
 
-    private IEnumerator DimColourOnHit()
+    private IEnumerator OffCollider()
     {
-
-        foreach (Transform child in transform)
-        {
-            transform.GetChild(0).gameObject.SetActive(false);
-            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                Color color = spriteRenderer.color;
-                color.a = 0.5f;
-                spriteRenderer.color = color;
-            }
-        }
+        transform.GetChild(0).gameObject.SetActive(false);
         yield return new WaitForSeconds(2f);
+        hitWithIsland = false;
         transform.GetChild(0).gameObject.SetActive(true);
-        foreach (Transform child in transform)
+    }
+
+    public void UpdateScore()
+    {
+        scoreTxt.text = GetScore().ToString();
+        highScoreTxt.text = Bridge.GetInstance().thisPlayerInfo.highScore.ToString();
+        coinTxt.text = GetCoins().ToString();
+    }
+
+    public void RedueHealth()
+    {
+        remainingLife--;
+        lifes[remainingLife].SetActive(false);
+        if (remainingLife == 0)
         {
-            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                Color color = spriteRenderer.color;
-                color.a = 1f;
-                spriteRenderer.color = color;
-            }
+            GameManager.Instance.GameOver();
         }
     }
 
