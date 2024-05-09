@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     private int hitCount;
 
     private Coroutine chasingCoroutine;
+    private Coroutine slowMoveCoroutine;
+    private Coroutine speedMoveCoroutine;
 
     public GameObject octopus;
     public GameObject tral;
@@ -129,7 +131,7 @@ public class PlayerController : MonoBehaviour
             OnTouchDrag(Input.mousePosition);
             if (hitWithIsland)
             {
-                StartCoroutine(OffCollider());
+                StartCoroutine(OffCollider(2));
             }
         }
         if (hitCount >= 2)
@@ -162,13 +164,21 @@ public class PlayerController : MonoBehaviour
             {
                 StopCoroutine(chasingCoroutine);
             }
-            StartCoroutine(SlowMove());
+            if (slowMoveCoroutine != null)
+            {
+                StopCoroutine(SlowMove());
+            }
+            slowMoveCoroutine = StartCoroutine(SlowMove());
             chasingCoroutine = StartCoroutine(IsChaseing());
             hitCount++;
         }
         if (collision.CompareTag("Jump"))
         {
-            StartCoroutine(SpeedMove());
+            if (speedMoveCoroutine != null)
+            {
+                StopCoroutine(SpeedMove());
+            }
+            speedMoveCoroutine = StartCoroutine(SpeedMove());
         }
         if (collision.CompareTag("Monster"))
         {
@@ -183,6 +193,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private IEnumerator OffCollider(int time)
+    {
+        transform.GetChild(0).gameObject.SetActive(false);
+        yield return new WaitForSeconds(time);
+        hitWithIsland = false;
+        transform.GetChild(0).gameObject.SetActive(true);
+    }
+
     private IEnumerator SlowMove()
     {
         speed = baseSpeed/2;
@@ -192,18 +210,18 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SpeedMove()
     {
+        StartCoroutine(OffCollider(5));
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        transform.GetChild(0).gameObject.SetActive(false);
         straightImgae.SetActive(false);
         leftImgae.SetActive(false);
         rightImgae.SetActive(false);
         jumpImgae.SetActive(true);
+        transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         tral.SetActive(false);
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
-        transform.GetChild(0).gameObject.SetActive(true);
         isFlying = false;
         straightImgae.SetActive(true);
         leftImgae.SetActive(false);
@@ -298,14 +316,6 @@ public class PlayerController : MonoBehaviour
         //    rightImgae.SetActive(false);
         //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         //}
-    }
-
-    private IEnumerator OffCollider()
-    {
-        transform.GetChild(0).gameObject.SetActive(false);
-        yield return new WaitForSeconds(2f);
-        hitWithIsland = false;
-        transform.GetChild(0).gameObject.SetActive(true);
     }
 
     public void UpdateScore()
