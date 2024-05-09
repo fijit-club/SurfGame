@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class BGSpawner : MonoBehaviour
 {
@@ -17,8 +18,12 @@ public class BGSpawner : MonoBehaviour
 
     public void SpawnBG()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLength, 128);
-        GameObject newBG = Instantiate(bgPref, nextSpawnPosition, Quaternion.identity);
+        GameObject newBG = PhotonNetwork.Instantiate(bgPref.name, nextSpawnPosition, Quaternion.identity);
         newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
         previousBg = newBG.transform;
     }

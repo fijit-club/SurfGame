@@ -40,30 +40,27 @@ public class NativeAPI
         public Asset(string peteId)
         {
             id = peteId;
-            attributes = new Attributes[3];
-
-            attributes[0] = new Attributes();
-            attributes[0].id = peteId + "-aircontroll";
-            attributes[0].level = 0;
-
-
-            attributes[1] = new Attributes();
-            attributes[1].id = peteId + "-speed";
-            attributes[1].level = 0;
-
-
-            attributes[2] = new Attributes();
-            attributes[2].id = peteId + "-fuel";
-            attributes[2].level = 0;
         }
     }
 
     [System.Serializable]
+    public class MultiplayerData
+    {
+        public string username;
+        public string avatar;
+        public string lobbyId;
+        public int lobbySize;
+        public bool isHost;
+
+    }
+
+[System.Serializable]
     public class Data
     {
         public List<Asset> assets;
         public SaveData saveData;
-    }
+        public MultiplayerData multiplayer;
+}
 
     [System.Serializable]
     public class PlayerInfo
@@ -85,6 +82,7 @@ public class NativeAPI
         public PlayerInfo thisPlayerInfo;
         private static Bridge instance;
         public int coinsCollected = 0;
+        public bool testing;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
@@ -314,7 +312,10 @@ public class NativeAPI
         //SendInitialData("{\"coins\":3400,\"data\":{\"assets\":[{\"id\":\"hill-climb-basic\",\"attributes\":[]}]}}");
 
         //SendInitialData("{\"coins\":3400,\"data\":{\"cannons\":[{\"id\":\"bvb-cannon-1\",\"attributes\":[{\"bvb-cannon-1-speed\":0,\"bvb-cannon-1-power\":0}]}]}}");
-        SendInitialData("{\"coins\":30000,\"data\":{}}");
+        //SendInitialData("{\"coins\":30000,\"data\":{}}");
+
+        SendInitialData(
+              "{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":null,\"multiplayer\":{\"lobbyId\":\"095c91be-a376-4c74-805e-d153523c40af\",\"avatar\":\"https://assets.fijit.club/fijit-v2/avatars/2.png\",\"isHost\":true,\"lobbySize\":3,\"username\":\"Vyshak\"}},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
 
         //SendInitialData("{\"coins\":34,\"data\":{\"petes\":[{\"id\":\"health-1\",\"attributes\":[{\"id\":\"bullet-1-speed\",\"level\":91},{\"id\":\"compo-1-power\",\"level\":92}]},{\"id\":\"bvb-cannon-2\",\"attributes\":[{\"id\":\"bvb-cannon-2-speed\",\"level\":3},{\"id\":\"bvb-cannon-2-power\",\"level\":2}]}]}}");
         //SendInitialData("{\"coins\": 123,\"data\": null}");

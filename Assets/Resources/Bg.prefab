@@ -3051,6 +3051,8 @@ GameObject:
   - component: {fileID: 9111448280170006859}
   - component: {fileID: 9111448280170006860}
   - component: {fileID: 9056807816184645442}
+  - component: {fileID: 3396410096508583970}
+  - component: {fileID: 8089657223264017094}
   m_Layer: 0
   m_Name: Bg
   m_TagString: Untagged
@@ -3155,6 +3157,7 @@ MonoBehaviour:
   - {fileID: 1940155232373119925, guid: c3cb514e53c94644a87d0e4fcc78676a, type: 3}
   - {fileID: 6712447197722468339, guid: 140df58dcfca7d84c815d0a9c8e38cb6, type: 3}
   - {fileID: 6577382094787237339, guid: 2f42c3489b93a604f878a566aa13d810, type: 3}
+  - {fileID: 357468790259372902, guid: 278ccfa2c5ff96449b87a14c1011d20c, type: 3}
   slowObstacles:
   - {fileID: 7415212217773077002, guid: b5cbcdeaf6762af489087e038d2cdb78, type: 3}
   - {fileID: 1180528296415660426, guid: d8e27d620457b3e458bd1950b5f2be34, type: 3}
@@ -3199,3 +3202,42 @@ MonoBehaviour:
   - {fileID: 3240654540735780596}
   - {fileID: 3240654540730818290}
   - {fileID: 3240654540430253118}
+--- !u!114 &3396410096508583970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9111448280170006861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 1
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 8089657223264017094}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8089657223264017094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9111448280170006861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1

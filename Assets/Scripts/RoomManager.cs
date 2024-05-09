@@ -22,22 +22,31 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.AutomaticallySyncScene = true;
     }
-    public void createRoom()
+
+    public void TryCreateRoom()
     {
-        int count = int.Parse(playerCountText.text);
-        PhotonNetwork.CreateRoom(createText.text, new RoomOptions() { MaxPlayers = count, IsVisible = isVisibile, IsOpen = true }, TypedLobby.Default, null);
+        if (!Bridge.GetInstance().testing)
+            PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+        CreateRoom();
     }
 
-    public void visibility(bool visible)
+    private void CreateRoom()
     {
-        if (visible)
-        {
-            isVisibile = true;
-        }
-        else
-        {
-            isVisibile = false;
-        }
+        if (!Bridge.GetInstance().testing)
+            PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.BroadcastPropsChangeToAll = true;
+        PhotonNetwork.CreateRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId, roomOptions);
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
     }
 
     public void JoinRoom()
@@ -52,13 +61,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
         for (int i = 0; i < players.Length; i++)
         {
             GameObject player = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
-            //player.GetComponent<PlayerNameItem>().playerNameListText.text = players[i].NickName;
+            player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
         }
-    }
-
-    public void JoinRandonRoom()
-    {
-        PhotonNetwork.JoinRandomRoom();
     }
 
     public void StartGame()
@@ -66,19 +70,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.Log("Master client is starting the game.");
-            //PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.LoadLevel("Game");
         }
         else
         {
             Debug.LogWarning("Only the master client can start the game.");
         }
-    }
-
-
-    public void JoinRoomInList(string roomname)
-    {
-        PhotonNetwork.JoinRoom(roomname);
     }
 
     public void LeaveRoom()
@@ -94,6 +91,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         GameObject player = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
-        //player.GetComponent<PlayerNameItem>().playerNameListText.text = newPlayer.NickName;
+        player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
     }
 }
