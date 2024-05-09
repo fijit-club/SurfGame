@@ -11,6 +11,7 @@ TagManager:
   - Missile
   - Monster
   - Waste
+  - BG
   layers:
   - Default
   - TransparentFX

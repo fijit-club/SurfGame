@@ -1,21 +1,19 @@
 using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public GameObject[] lifes;
-    private int remainingLife=3;
-    public TextMeshProUGUI scoreTxt;
-    public TextMeshProUGUI coinTxt;
-    public TextMeshProUGUI highScoreTxt;
+    public static Action onCountdownFinish;
     public GameObject coinPref;
     public RectTransform parent;
     public RectTransform coinDestination;
     public GameObject gameOVerScreen;
+    public TextMeshProUGUI startTimerTxt;
     public bool isGameOver;
 
     private void Awake()
@@ -23,39 +21,25 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    private void OnEnable()
-    {
-        Shop.onGameBegin += GameBegin;
-    }
-
-    private void OnDisable()
-    {
-        Shop.onGameBegin -= GameBegin;
-    }
-
-    private void GameBegin()
+    private void Start()
     {
         SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+        StartCoroutine(StartTimer());
     }
 
-    public void RedueHealth()
+    private IEnumerator StartTimer()
     {
-        remainingLife--;
-        for(int i = 0; i < 1;i++)
+        int countdownValue = 3;
+        while (countdownValue > 0)
         {
-            lifes[remainingLife].SetActive(false);
+            startTimerTxt.text = countdownValue.ToString();
+            yield return new WaitForSeconds(1);
+            countdownValue--;
         }
-        if (remainingLife == 0)
-        {
-            GameOver();
-        }
-    }
-
-    public void UpdateScore()
-    {
-        scoreTxt.text = PlayerController.Instance.GetScore().ToString();
-        highScoreTxt.text = Bridge.GetInstance().thisPlayerInfo.highScore.ToString();
-        coinTxt.text = PlayerController.Instance.GetCoins().ToString();
+        startTimerTxt.text = "GO!";
+        yield return new WaitForSeconds(1);
+        startTimerTxt.text = null;
+        onCountdownFinish?.Invoke();
     }
 
     public void Reload()
@@ -72,23 +56,6 @@ public class GameManager : MonoBehaviour
             gameOVerScreen.SetActive(true);
             Time.timeScale = 0;
         }
-    }
-
-    private string ChangeCoinsFormate(int coins)
-    {
-        if (coins >= 10000)
-        {
-            return (coins / 1000).ToString() + "K";
-        }
-        else
-        {
-            return coins.ToString();
-        }
-    }
-
-    public void ChangeForamte(TextMeshProUGUI text, int totalCoins)
-    {
-        text.text = ChangeCoinsFormate(totalCoins);
     }
 
     public void CoinAnimation(int count, Vector2 pos)

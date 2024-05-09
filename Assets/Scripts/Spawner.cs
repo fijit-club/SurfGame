@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class Spawner : MonoBehaviour
 {
@@ -19,44 +20,47 @@ public class Spawner : MonoBehaviour
         Instance = this;
     }
 
-    private void OnEnable()
+
+    private void Start()
     {
-        Shop.onGameBegin += GameBegin;
+        SpawnObs(obstacles[Random.Range(0, obstacles.Length)], obsSpawnPos[Random.Range(0, obsSpawnPos.Length)]);
+        SpawnObs(slowObstacles[Random.Range(0, slowObstacles.Length)], slowObjSpawnPos[Random.Range(0, slowObjSpawnPos.Length)]);
+        SpawnObs(wasteObstacles[Random.Range(0, wasteObstacles.Length)], wasteObjSpawnPos[Random.Range(0, wasteObjSpawnPos.Length)]);
+
+        //lastPlayerPosition = SpawnerPhoton.Instance.playerPrefab[Shop.Instance.selectedPlayer].transform.position;
+        //StartCoroutine(Spawn());
     }
 
-    private void OnDisable()
-    {
-        Shop.onGameBegin -= GameBegin;
-    }
-
-    private void GameBegin()
-    {
-        lastPlayerPosition = PlayerController.Instance.transform.position;
-        StartCoroutine(Spawn());
-    }
+    
 
     private void SpawnObs(GameObject obs, Transform pos)
     {
-        GameObject obj = Instantiate(obs, pos.position, Quaternion.identity, transform);
-    }
-
-    private IEnumerator Spawn()
-    {
-        while (true)
+        if (!PhotonNetwork.IsMasterClient)
         {
-            Vector3 currentPlayerPosition = PlayerController.Instance.transform.position;
-            float distanceTraveled = currentPlayerPosition.y - lastPlayerPosition.y;
-
-            if (Mathf.Abs(distanceTraveled) >= 8f)
-            {
-                SpawnObs(obstacles[Random.Range(0, obstacles.Length)], obsSpawnPos[Random.Range(0, obsSpawnPos.Length)]);
-                SpawnObs(slowObstacles[Random.Range(0, slowObstacles.Length)], slowObjSpawnPos[Random.Range(0, slowObjSpawnPos.Length)]);
-                SpawnObs(wasteObstacles[Random.Range(0, wasteObstacles.Length)], wasteObjSpawnPos[Random.Range(0, wasteObjSpawnPos.Length)]);
-                lastPlayerPosition = currentPlayerPosition;
-            }
-            yield return null;
+            return;
         }
+        PhotonNetwork.Instantiate(obs.name, pos.position, Quaternion.identity);
     }
+
+
+
+    //private IEnumerator Spawn()
+    //{
+    //    while (true)
+    //    {
+    //        Vector3 currentPlayerPosition = SpawnerPhoton.Instance.playerPrefab[Shop.Instance.selectedPlayer].transform.position;
+    //        float distanceTraveled = currentPlayerPosition.y - lastPlayerPosition.y;
+
+    //        if (Mathf.Abs(distanceTraveled) >= 8f)
+    //        {
+    //            SpawnObs(obstacles[Random.Range(0, obstacles.Length)], obsSpawnPos[Random.Range(0, obsSpawnPos.Length)]);
+    //            SpawnObs(slowObstacles[Random.Range(0, slowObstacles.Length)], slowObjSpawnPos[Random.Range(0, slowObjSpawnPos.Length)]);
+    //            SpawnObs(wasteObstacles[Random.Range(0, wasteObstacles.Length)], wasteObjSpawnPos[Random.Range(0, wasteObjSpawnPos.Length)]);
+    //            lastPlayerPosition = currentPlayerPosition;
+    //        }
+    //        yield return null;
+    //    }
+    //}
 }
 
 

@@ -35,7 +35,7 @@ public class Shop : MonoBehaviour
 
     private void Update()
     {
-        GameManager.Instance.ChangeForamte(totalCoins, Bridge.GetInstance().thisPlayerInfo.coins);
+        ChangeForamte(totalCoins, Bridge.GetInstance().thisPlayerInfo.coins);
     }
 
     public void ShowSaveData(int value)
@@ -112,7 +112,7 @@ public class Shop : MonoBehaviour
         }
         SoundManager.Instance.PlaySound(SoundManager.Sounds.PurchaseSuccess);
         Bridge.GetInstance().UpdateCoins(-itemPrice);
-        GameManager.Instance.ChangeForamte(totalCoins, Bridge.GetInstance().thisPlayerInfo.coins);
+        ChangeForamte(totalCoins, Bridge.GetInstance().thisPlayerInfo.coins);
         useBtn.SetActive(true);
         buyBtn.SetActive(false);
         SelectedCar();
@@ -174,5 +174,23 @@ public class Shop : MonoBehaviour
                 playerPowers[i].SetActive(false);
             }
         }
+    }
+
+
+    private string ChangeCoinsFormate(int coins)
+    {
+        if (coins >= 10000)
+        {
+            return (coins / 1000).ToString() + "K";
+        }
+        else
+        {
+            return coins.ToString();
+        }
+    }
+
+    public void ChangeForamte(TextMeshProUGUI text, int totalCoins)
+    {
+        text.text = ChangeCoinsFormate(totalCoins);
     }
 }

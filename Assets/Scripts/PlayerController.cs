@@ -1,35 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Photon.Pun;
 using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
+
+    public static Action onCamFollow;
+
     public int scoreMultiplier;
     public int coinMultiplier;
     public Rigidbody2D rb;
     public float baseSpeed;
     public float speed;
-    public bool camFollow;
+
     private Camera mainCamera;
     private float camHalfWidth;
-    public Transform slowObsSpawnPos;
     private Vector2 direction;
     private float score = 0;
     private int coins;
-    private bool isFlying;
     private float speedIncreaseInterval = 10f;
     private float lastSpeedIncreaseTime;
-    public TextMeshProUGUI startTimerTxt;
-    public GameObject octopus;
-    public int hitCount;
-    public bool isChasing;
+    private int hitCount;
+
     private Coroutine chasingCoroutine;
+
+    public GameObject octopus;
+    public GameObject tral;
     public GameObject straightImgae;
     public GameObject rightImgae;
     public GameObject leftImgae;
+    public GameObject jumpImgae;
+
     private bool canTouchControll;
+    private bool isChasing;
+    private bool isFlying;
+    private bool hitWithIsland;
+
+    private TextMeshProUGUI scoreTxt;
+    private TextMeshProUGUI coinTxt;
+    private TextMeshProUGUI highScoreTxt;
+    private List<GameObject> lifes = new List<GameObject>();
+    private int remainingLife = 3;
+    private GameObject healthSymbols;
 
     private void Awake()
     {
@@ -39,22 +55,50 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        Shop.onGameBegin += GameBegin;
+        GameManager.onCountdownFinish += GameBegin;
     }
 
     private void OnDisable()
     {
-        Shop.onGameBegin -= GameBegin;
+        GameManager.onCountdownFinish -= GameBegin;
     }
 
     private void GameBegin()
     {
-        StartCoroutine(StartTimer());
+        canTouchControll = true;
+        onCamFollow?.Invoke();
+        GameManager.Instance.startTimerTxt.text = null;
+        direction = Vector2.down;
+        speed = baseSpeed;
+        lastSpeedIncreaseTime = Time.time;
+        octopus= GameObject.FindWithTag("Monster");
+    }
+
+    private void Start()
+    {
+        float orthoSize = mainCamera.orthographicSize;
+        camHalfWidth = orthoSize / 2;
         straightImgae.SetActive(true);
+        Instantiate(octopus);
+
+        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
+        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
+        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        healthSymbols = GameObject.Find("HealthSymbols");
+        print(healthSymbols.transform.GetChild(0).name);
+        for (int i = 0; i < 3; i++)
+        {
+            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
+        }
     }
 
     private void FixedUpdate()
     {
+        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
@@ -66,40 +110,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator StartTimer()
-    {
-        float orthoSize = mainCamera.orthographicSize;
-        camHalfWidth = orthoSize / 2;
-
-        int countdownValue = 3;
-        while (countdownValue > 0)
-        {
-            startTimerTxt.text = countdownValue.ToString();
-            yield return new WaitForSeconds(1);
-            countdownValue--;
-        }
-        startTimerTxt.text = "GO!";
-        yield return new WaitForSeconds(1);
-        canTouchControll = true;
-        startTimerTxt.text = null;
-        direction = Vector2.down;
-        speed = baseSpeed;
-        lastSpeedIncreaseTime = Time.time;
-    }
 
     private void IncreaseSpeed()
     {
-        baseSpeed += 10f;
+        baseSpeed += 20f;
         speed = baseSpeed;
     }
 
     private void Update()
     {
+        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+        UpdateScore();
         if (Input.GetMouseButton(0))
         {
             OnTouchDrag(Input.mousePosition);
+            if (hitWithIsland)
+            {
+                StartCoroutine(OffCollider());
+            }
         }
-        GameManager.Instance.UpdateScore();
         if (hitCount >= 2)
         {
             octopus.SetActive(true);
@@ -108,10 +140,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Follow"))
+        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
         {
-            camFollow = true;
+            return;
         }
+
         if (collision.CompareTag("Obstacle"))
         {
             if (isChasing)
@@ -119,9 +152,9 @@ public class PlayerController : MonoBehaviour
                 hitCount++;
             }
             direction = Vector2.zero;
-            GameManager.Instance.RedueHealth();
+            RedueHealth();
             SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
-            StartCoroutine(DimColourOnHit());
+            hitWithIsland = true;
         }
         if (collision.CompareTag("Slow"))
         {
@@ -143,7 +176,7 @@ public class PlayerController : MonoBehaviour
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += coinMultiplier;
+            coins += 5*coinMultiplier;
             GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
@@ -162,18 +195,28 @@ public class PlayerController : MonoBehaviour
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        GetComponent<BoxCollider2D>().enabled = false;
-        yield return new WaitForSeconds(4f);
+        transform.GetChild(0).gameObject.SetActive(false);
+        straightImgae.SetActive(false);
+        leftImgae.SetActive(false);
+        rightImgae.SetActive(false);
+        jumpImgae.SetActive(true);
+        tral.SetActive(false);
+        yield return new WaitForSeconds(3f);
         speed = baseSpeed;
-        GetComponent<BoxCollider2D>().enabled = true;
+        transform.GetChild(0).gameObject.SetActive(true);
         isFlying = false;
+        straightImgae.SetActive(true);
+        leftImgae.SetActive(false);
+        rightImgae.SetActive(false);
+        jumpImgae.SetActive(false);
+        tral.SetActive(true);
     }
 
     private void RestrictMovement()
     {
         transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
 
-        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f)
+        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
         {
             straightImgae.SetActive(true);
             rightImgae.SetActive(false);
@@ -184,7 +227,10 @@ public class PlayerController : MonoBehaviour
 
     private void FollowPlayer()
     {
-        slowObsSpawnPos.position = new Vector2(slowObsSpawnPos.position.x, transform.position.y - 12f);
+        if (octopus == null)
+        {
+            return;
+        }
         if (isChasing)
         {
             octopus.GetComponent<EnemyFollow>().MoveTowards(transform.GetChild(1));
@@ -236,46 +282,46 @@ public class PlayerController : MonoBehaviour
             rightImgae.SetActive(false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -50);
         }
-        else if (verticalMove < 0)
-        {
-            direction = new Vector2(0, -1);
-            straightImgae.SetActive(true);
-            leftImgae.SetActive(false);
-            rightImgae.SetActive(false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if (verticalMove > 0)
-        {
-            direction = new Vector2(0, 0);
-            straightImgae.SetActive(true);
-            leftImgae.SetActive(false);
-            rightImgae.SetActive(false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        }
+        //else if (verticalMove < 0)
+        //{
+        //    direction = new Vector2(0, -1);
+        //    straightImgae.SetActive(true);
+        //    leftImgae.SetActive(false);
+        //    rightImgae.SetActive(false);
+        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
+        //}
+        //else if (verticalMove > 0)
+        //{
+        //    direction = new Vector2(0, 0);
+        //    straightImgae.SetActive(true);
+        //    leftImgae.SetActive(false);
+        //    rightImgae.SetActive(false);
+        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
+        //}
     }
 
-    private IEnumerator DimColourOnHit()
+    private IEnumerator OffCollider()
     {
-        foreach (Transform child in transform)
-        {
-            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                Color color = spriteRenderer.color;
-                color.a = 0.5f;
-                spriteRenderer.color = color;
-            }
-        }
+        transform.GetChild(0).gameObject.SetActive(false);
         yield return new WaitForSeconds(2f);
-        foreach (Transform child in transform)
+        hitWithIsland = false;
+        transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    public void UpdateScore()
+    {
+        scoreTxt.text = GetScore().ToString();
+        highScoreTxt.text = Bridge.GetInstance().thisPlayerInfo.highScore.ToString();
+        coinTxt.text = GetCoins().ToString();
+    }
+
+    public void RedueHealth()
+    {
+        remainingLife--;
+        lifes[remainingLife].SetActive(false);
+        if (remainingLife == 0)
         {
-            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                Color color = spriteRenderer.color;
-                color.a = 1f;
-                spriteRenderer.color = color;
-            }
+            GameManager.Instance.GameOver();
         }
     }
 
