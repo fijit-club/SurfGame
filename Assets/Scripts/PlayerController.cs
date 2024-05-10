@@ -80,7 +80,10 @@ public class PlayerController : MonoBehaviour
     {
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
-        straightImgae.SetActive(true);
+        UpdateStraightImage(true);
+        UpdateLeftImage(false);
+        UpdateRightImage(false);
+        UpdateJumpImage(false);
         Instantiate(octopus);
 
         scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
@@ -214,19 +217,19 @@ public class PlayerController : MonoBehaviour
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        straightImgae.SetActive(false);
-        leftImgae.SetActive(false);
-        rightImgae.SetActive(false);
-        jumpImgae.SetActive(true);
+        UpdateStraightImage(false);
+        UpdateLeftImage(false);
+        UpdateRightImage(false);
+        UpdateJumpImage(true);
         transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         tral.SetActive(false);
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
         isFlying = false;
-        straightImgae.SetActive(true);
-        leftImgae.SetActive(false);
-        rightImgae.SetActive(false);
-        jumpImgae.SetActive(false);
+        UpdateStraightImage(true);
+        UpdateLeftImage(false);
+        UpdateRightImage(false);
+        UpdateJumpImage(false);
         tral.SetActive(true);
     }
 
@@ -236,9 +239,10 @@ public class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
         {
-            straightImgae.SetActive(true);
-            rightImgae.SetActive(false);
-            leftImgae.SetActive(false);
+            UpdateStraightImage(true);
+            UpdateLeftImage(false);
+            UpdateRightImage(false);
+            UpdateJumpImage(false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
         }
     }
@@ -287,17 +291,26 @@ public class PlayerController : MonoBehaviour
         if (horizontalMove > 0)
         {
             direction = new Vector2(1, -1);
-            straightImgae.SetActive(false);
-            leftImgae.SetActive(false);
-            rightImgae.SetActive(true);
+            //straightImgae.SetActive(false);
+            //leftImgae.SetActive(false);
+            //rightImgae.SetActive(true);
+            UpdateStraightImage(false);
+            UpdateLeftImage(false);
+            UpdateRightImage(true);
+            UpdateJumpImage(false);
+
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 50);
         }
         else if (horizontalMove < 0)
         {
             direction = new Vector2(-1, -1);
-            straightImgae.SetActive(false);
-            leftImgae.SetActive(true);
-            rightImgae.SetActive(false);
+            //straightImgae.SetActive(false);
+            //leftImgae.SetActive(true);
+            //rightImgae.SetActive(false);
+            UpdateStraightImage(false);
+            UpdateLeftImage(true);
+            UpdateRightImage(false);
+            UpdateJumpImage(false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -50);
         }
         //else if (verticalMove < 0)
@@ -316,6 +329,51 @@ public class PlayerController : MonoBehaviour
         //    rightImgae.SetActive(false);
         //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         //}
+    }
+
+    [PunRPC]
+    void ActivateStraightImage(bool activate)
+    {
+        straightImgae.SetActive(activate);
+    }
+
+    [PunRPC]
+    void ActivateJumpImage(bool activate)
+    {
+        jumpImgae.SetActive(activate);
+    }
+
+    [PunRPC]
+    void ActivateRightImage(bool activate)
+    {
+        rightImgae.SetActive(activate);
+    }
+
+    [PunRPC]
+    void ActivateLeftImage(bool activate)
+    {
+        leftImgae.SetActive(activate);
+    }
+
+    void UpdateStraightImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateStraightImage", RpcTarget.All, activate);
+    }
+
+
+    void UpdateJumpImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateJumpImage", RpcTarget.All, activate);
+    }
+
+    void UpdateRightImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateRightImage", RpcTarget.All, activate);
+    }
+
+    void UpdateLeftImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateLeftImage", RpcTarget.All, activate);
     }
 
     public void UpdateScore()
