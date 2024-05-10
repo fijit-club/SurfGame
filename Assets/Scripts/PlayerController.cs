@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     public GameObject rightImgae;
     public GameObject leftImgae;
     public GameObject jumpImgae;
+    public GameObject deadEffect;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -80,10 +81,7 @@ public class PlayerController : MonoBehaviour
     {
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
-        UpdateStraightImage(true);
-        UpdateLeftImage(false);
-        UpdateRightImage(false);
-        UpdateJumpImage(false);
+        SpriteSwap(true, false, false, false);
         Instantiate(octopus);
 
         scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
@@ -186,6 +184,9 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Monster"))
         {
             GameManager.Instance.GameOver();
+            UpdateDeadEffect();
+            canTouchControll = false;
+            Bridge.GetInstance().SendScore(GetScore());
         }
         if (collision.CompareTag("Waste"))
         {
@@ -217,19 +218,13 @@ public class PlayerController : MonoBehaviour
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        UpdateStraightImage(false);
-        UpdateLeftImage(false);
-        UpdateRightImage(false);
-        UpdateJumpImage(true);
+        SpriteSwap(false, false, false, true);
         transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         tral.SetActive(false);
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
         isFlying = false;
-        UpdateStraightImage(true);
-        UpdateLeftImage(false);
-        UpdateRightImage(false);
-        UpdateJumpImage(false);
+        SpriteSwap(true, false, false, false);
         tral.SetActive(true);
     }
 
@@ -239,10 +234,7 @@ public class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
         {
-            UpdateStraightImage(true);
-            UpdateLeftImage(false);
-            UpdateRightImage(false);
-            UpdateJumpImage(false);
+            SpriteSwap(true, false, false, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
         }
     }
@@ -291,90 +283,84 @@ public class PlayerController : MonoBehaviour
         if (horizontalMove > 0)
         {
             direction = new Vector2(1, -1);
-            //straightImgae.SetActive(false);
-            //leftImgae.SetActive(false);
-            //rightImgae.SetActive(true);
-            UpdateStraightImage(false);
-            UpdateLeftImage(false);
-            UpdateRightImage(true);
-            UpdateJumpImage(false);
-
+            SpriteSwap(false, false, true, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 50);
         }
         else if (horizontalMove < 0)
         {
             direction = new Vector2(-1, -1);
-            //straightImgae.SetActive(false);
-            //leftImgae.SetActive(true);
-            //rightImgae.SetActive(false);
-            UpdateStraightImage(false);
-            UpdateLeftImage(true);
-            UpdateRightImage(false);
-            UpdateJumpImage(false);
+            SpriteSwap(false, true, false, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -50);
         }
-        //else if (verticalMove < 0)
-        //{
-        //    direction = new Vector2(0, -1);
-        //    straightImgae.SetActive(true);
-        //    leftImgae.SetActive(false);
-        //    rightImgae.SetActive(false);
-        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        //}
-        //else if (verticalMove > 0)
-        //{
-        //    direction = new Vector2(0, 0);
-        //    straightImgae.SetActive(true);
-        //    leftImgae.SetActive(false);
-        //    rightImgae.SetActive(false);
-        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        //}
     }
 
     [PunRPC]
-    void ActivateStraightImage(bool activate)
+    private void ActivateStraightImage(bool activate)
     {
         straightImgae.SetActive(activate);
     }
 
     [PunRPC]
-    void ActivateJumpImage(bool activate)
+    private void ActivateJumpImage(bool activate)
     {
         jumpImgae.SetActive(activate);
     }
 
     [PunRPC]
-    void ActivateRightImage(bool activate)
+    private void ActivateRightImage(bool activate)
     {
         rightImgae.SetActive(activate);
     }
 
     [PunRPC]
-    void ActivateLeftImage(bool activate)
+    private  void ActivateLeftImage(bool activate)
     {
         leftImgae.SetActive(activate);
     }
 
-    void UpdateStraightImage(bool activate)
+    private void UpdateStraightImage(bool activate)
     {
         GetComponent<PhotonView>().RPC("ActivateStraightImage", RpcTarget.All, activate);
     }
 
 
-    void UpdateJumpImage(bool activate)
+    private void UpdateJumpImage(bool activate)
     {
         GetComponent<PhotonView>().RPC("ActivateJumpImage", RpcTarget.All, activate);
     }
 
-    void UpdateRightImage(bool activate)
+    private void UpdateRightImage(bool activate)
     {
         GetComponent<PhotonView>().RPC("ActivateRightImage", RpcTarget.All, activate);
     }
 
-    void UpdateLeftImage(bool activate)
+    private void UpdateLeftImage(bool activate)
     {
         GetComponent<PhotonView>().RPC("ActivateLeftImage", RpcTarget.All, activate);
     }
+
+    private void SpriteSwap(bool straight, bool left, bool right, bool jump)
+    {
+        UpdateStraightImage(straight);
+        UpdateLeftImage(left);
+        UpdateRightImage(right);
+        UpdateJumpImage(jump);
+    }
+
+    [PunRPC]
+    private void DeadEffect()
+    {
+        deadEffect.SetActive(true);
+        direction = Vector2.zero;
+        SpriteSwap(false, false, false, false);
+    }
+
+    private void UpdateDeadEffect()
+    {
+        GetComponent<PhotonView>().RPC("DeadEffect", RpcTarget.All);
+    }
+
+
 
     public void UpdateScore()
     {
@@ -390,6 +376,9 @@ public class PlayerController : MonoBehaviour
         if (remainingLife == 0)
         {
             GameManager.Instance.GameOver();
+            canTouchControll = false;
+            UpdateDeadEffect();
+            Bridge.GetInstance().SendScore(GetScore());
         }
     }
 
