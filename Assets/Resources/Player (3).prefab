@@ -89,6 +89,8 @@ MonoBehaviour:
   leftImgae: {fileID: 101425353197711374}
   jumpImgae: {fileID: 101425352139898557}
   deadEffect: {fileID: 1294827331273276919}
+  leaderBoardIcon: {fileID: 868464804492372006, guid: 78fe593c6412bdd44ad8ae46f5523124, type: 3}
+  iconSprite: {fileID: 21300000, guid: f098f5f9009b0984f9f5ca97d4aa7fc3, type: 3}
 --- !u!114 &5080114763457669772
 MonoBehaviour:
   m_ObjectHideFlags: 0

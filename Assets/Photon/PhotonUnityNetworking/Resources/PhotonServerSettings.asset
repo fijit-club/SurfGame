@@ -44,6 +44,9 @@ MonoBehaviour:
   - ActivateRightImage
   - ActivateStraightImage
   - DeadEffect
+  - UpdateScoreOnLeaderBoard
+  - ScoreOnLeaderBoard
+  - UpdateLeaderboardScoreRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

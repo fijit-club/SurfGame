@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Photon.Pun;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -37,6 +38,8 @@ public class PlayerController : MonoBehaviour
     public GameObject leftImgae;
     public GameObject jumpImgae;
     public GameObject deadEffect;
+    public GameObject leaderBoardIcon;
+    public Sprite iconSprite;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -46,9 +49,11 @@ public class PlayerController : MonoBehaviour
     private TextMeshProUGUI scoreTxt;
     private TextMeshProUGUI coinTxt;
     private TextMeshProUGUI highScoreTxt;
+    private GameObject leadrboardContent;
     private List<GameObject> lifes = new List<GameObject>();
     private int remainingLife = 3;
     private GameObject healthSymbols;
+    private TextMeshProUGUI leaderBoardScore;
 
     private void Awake()
     {
@@ -87,12 +92,15 @@ public class PlayerController : MonoBehaviour
         scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
         highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
         coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        leadrboardContent = GameObject.Find("LeadrboardContent");
         healthSymbols = GameObject.Find("HealthSymbols");
         print(healthSymbols.transform.GetChild(0).name);
         for (int i = 0; i < 3; i++)
         {
             lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
         }
+
+        LeaderBoardDisplay();
     }
 
     private void FixedUpdate()
@@ -139,6 +147,7 @@ public class PlayerController : MonoBehaviour
         {
             octopus.SetActive(true);
         }
+        UpdateLearBoardScore();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -195,6 +204,13 @@ public class PlayerController : MonoBehaviour
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
+    }
+
+    private void LeaderBoardDisplay()
+    {
+        GameObject obj= Instantiate(leaderBoardIcon, leadrboardContent.transform);
+        obj.GetComponent<Image>().sprite = iconSprite;
+        leaderBoardScore = obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 
     private IEnumerator OffCollider(int time)
@@ -358,6 +374,20 @@ public class PlayerController : MonoBehaviour
     private void UpdateDeadEffect()
     {
         GetComponent<PhotonView>().RPC("DeadEffect", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void UpdateLeaderboardScoreRPC(int newScore)
+    {
+        leaderBoardScore.text = newScore.ToString();
+    }
+
+    private void UpdateLearBoardScore()
+    {
+        if (GetScore()>0)
+        {
+            GetComponent<PhotonView>().RPC("UpdateLeaderboardScoreRPC", RpcTarget.All, GetScore());
+        }
     }
 
 
