@@ -54,9 +54,9 @@ public class GameManager : MonoBehaviour
             isGameOver = true;
             SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
             gameOVerScreen.SetActive(true);
-            Time.timeScale = 0;
         }
     }
+
 
     public void CoinAnimation(int count, Vector2 pos)
     {

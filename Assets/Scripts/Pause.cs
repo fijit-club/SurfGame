@@ -11,6 +11,7 @@ public class Pause : MonoBehaviour
     public GameObject vibrateOffImage;
     public GameObject pausePanel;
     public GameObject gamePanel;
+    public GameObject leaderBoardPanel;
     public TextMeshProUGUI scoreTxt;
     public TextMeshProUGUI highScoreTxt;
     public TextMeshProUGUI coinTxt;
@@ -93,6 +94,18 @@ public class Pause : MonoBehaviour
         vibrateImage.SetActive(false);
         Bridge.GetInstance().VibrateBridge(false);
         isVibrating = false;
+    }
+
+    public void LeaderBoard(bool toggle)
+    {
+        if (toggle)
+        {
+            LeanTween.scale(leaderBoardPanel, new Vector3(1f, 1f, 1f), 0.1f).setDelay(0.1f).setEase(LeanTweenType.animationCurve);
+        }
+        else
+        {
+            LeanTween.scale(leaderBoardPanel, new Vector3(0f, 0f, 0f), 0.1f).setDelay(0.1f).setEase(LeanTweenType.animationCurve);
+        }
     }
 
     private void Score()

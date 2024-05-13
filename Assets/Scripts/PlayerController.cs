@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Photon.Pun;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class PlayerController : MonoBehaviour
     private int hitCount;
 
     private Coroutine chasingCoroutine;
+    private Coroutine slowMoveCoroutine;
+    private Coroutine speedMoveCoroutine;
 
     public GameObject octopus;
     public GameObject tral;
@@ -34,6 +37,9 @@ public class PlayerController : MonoBehaviour
     public GameObject rightImgae;
     public GameObject leftImgae;
     public GameObject jumpImgae;
+    public GameObject deadEffect;
+    public GameObject leaderBoardIcon;
+    public Sprite iconSprite;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -43,9 +49,11 @@ public class PlayerController : MonoBehaviour
     private TextMeshProUGUI scoreTxt;
     private TextMeshProUGUI coinTxt;
     private TextMeshProUGUI highScoreTxt;
+    private GameObject leadrboardContent;
     private List<GameObject> lifes = new List<GameObject>();
     private int remainingLife = 3;
     private GameObject healthSymbols;
+    private TextMeshProUGUI leaderBoardScore;
 
     private void Awake()
     {
@@ -78,18 +86,21 @@ public class PlayerController : MonoBehaviour
     {
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
-        straightImgae.SetActive(true);
+        SpriteSwap(true, false, false, false);
         Instantiate(octopus);
 
         scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
         highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
         coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        leadrboardContent = GameObject.Find("LeadrboardContent");
         healthSymbols = GameObject.Find("HealthSymbols");
         print(healthSymbols.transform.GetChild(0).name);
         for (int i = 0; i < 3; i++)
         {
             lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
         }
+
+        LeaderBoardDisplay();
     }
 
     private void FixedUpdate()
@@ -108,6 +119,8 @@ public class PlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
+
+        UpdateLearBoardScore();
     }
 
 
@@ -129,7 +142,7 @@ public class PlayerController : MonoBehaviour
             OnTouchDrag(Input.mousePosition);
             if (hitWithIsland)
             {
-                StartCoroutine(OffCollider());
+                StartCoroutine(OffCollider(2));
             }
         }
         if (hitCount >= 2)
@@ -162,17 +175,28 @@ public class PlayerController : MonoBehaviour
             {
                 StopCoroutine(chasingCoroutine);
             }
-            StartCoroutine(SlowMove());
+            if (slowMoveCoroutine != null)
+            {
+                StopCoroutine(SlowMove());
+            }
+            slowMoveCoroutine = StartCoroutine(SlowMove());
             chasingCoroutine = StartCoroutine(IsChaseing());
             hitCount++;
         }
         if (collision.CompareTag("Jump"))
         {
-            StartCoroutine(SpeedMove());
+            if (speedMoveCoroutine != null)
+            {
+                StopCoroutine(SpeedMove());
+            }
+            speedMoveCoroutine = StartCoroutine(SpeedMove());
         }
         if (collision.CompareTag("Monster"))
         {
             GameManager.Instance.GameOver();
+            UpdateDeadEffect();
+            canTouchControll = false;
+            Bridge.GetInstance().SendScore(GetScore());
         }
         if (collision.CompareTag("Waste"))
         {
@@ -181,6 +205,21 @@ public class PlayerController : MonoBehaviour
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
+    }
+
+    private void LeaderBoardDisplay()
+    {
+        GameObject obj= Instantiate(leaderBoardIcon, leadrboardContent.transform);
+        obj.GetComponent<Image>().sprite = iconSprite;
+        leaderBoardScore = obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+    }
+
+    private IEnumerator OffCollider(int time)
+    {
+        transform.GetChild(0).gameObject.SetActive(false);
+        yield return new WaitForSeconds(time);
+        hitWithIsland = false;
+        transform.GetChild(0).gameObject.SetActive(true);
     }
 
     private IEnumerator SlowMove()
@@ -192,23 +231,17 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SpeedMove()
     {
+        StartCoroutine(OffCollider(5));
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
-        transform.GetChild(0).gameObject.SetActive(false);
-        straightImgae.SetActive(false);
-        leftImgae.SetActive(false);
-        rightImgae.SetActive(false);
-        jumpImgae.SetActive(true);
+        SpriteSwap(false, false, false, true);
+        transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         tral.SetActive(false);
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
-        transform.GetChild(0).gameObject.SetActive(true);
         isFlying = false;
-        straightImgae.SetActive(true);
-        leftImgae.SetActive(false);
-        rightImgae.SetActive(false);
-        jumpImgae.SetActive(false);
+        SpriteSwap(true, false, false, false);
         tral.SetActive(true);
     }
 
@@ -218,9 +251,7 @@ public class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
         {
-            straightImgae.SetActive(true);
-            rightImgae.SetActive(false);
-            leftImgae.SetActive(false);
+            SpriteSwap(true, false, false, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
         }
     }
@@ -269,44 +300,98 @@ public class PlayerController : MonoBehaviour
         if (horizontalMove > 0)
         {
             direction = new Vector2(1, -1);
-            straightImgae.SetActive(false);
-            leftImgae.SetActive(false);
-            rightImgae.SetActive(true);
+            SpriteSwap(false, false, true, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 50);
         }
         else if (horizontalMove < 0)
         {
             direction = new Vector2(-1, -1);
-            straightImgae.SetActive(false);
-            leftImgae.SetActive(true);
-            rightImgae.SetActive(false);
+            SpriteSwap(false, true, false, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -50);
         }
-        //else if (verticalMove < 0)
-        //{
-        //    direction = new Vector2(0, -1);
-        //    straightImgae.SetActive(true);
-        //    leftImgae.SetActive(false);
-        //    rightImgae.SetActive(false);
-        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        //}
-        //else if (verticalMove > 0)
-        //{
-        //    direction = new Vector2(0, 0);
-        //    straightImgae.SetActive(true);
-        //    leftImgae.SetActive(false);
-        //    rightImgae.SetActive(false);
-        //    transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-        //}
     }
 
-    private IEnumerator OffCollider()
+    [PunRPC]
+    private void ActivateStraightImage(bool activate)
     {
-        transform.GetChild(0).gameObject.SetActive(false);
-        yield return new WaitForSeconds(2f);
-        hitWithIsland = false;
-        transform.GetChild(0).gameObject.SetActive(true);
+        straightImgae.SetActive(activate);
     }
+
+    [PunRPC]
+    private void ActivateJumpImage(bool activate)
+    {
+        jumpImgae.SetActive(activate);
+    }
+
+    [PunRPC]
+    private void ActivateRightImage(bool activate)
+    {
+        rightImgae.SetActive(activate);
+    }
+
+    [PunRPC]
+    private  void ActivateLeftImage(bool activate)
+    {
+        leftImgae.SetActive(activate);
+    }
+
+    private void UpdateStraightImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateStraightImage", RpcTarget.All, activate);
+    }
+
+
+    private void UpdateJumpImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateJumpImage", RpcTarget.All, activate);
+    }
+
+    private void UpdateRightImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateRightImage", RpcTarget.All, activate);
+    }
+
+    private void UpdateLeftImage(bool activate)
+    {
+        GetComponent<PhotonView>().RPC("ActivateLeftImage", RpcTarget.All, activate);
+    }
+
+    private void SpriteSwap(bool straight, bool left, bool right, bool jump)
+    {
+        UpdateStraightImage(straight);
+        UpdateLeftImage(left);
+        UpdateRightImage(right);
+        UpdateJumpImage(jump);
+    }
+
+    [PunRPC]
+    private void DeadEffect()
+    {
+        deadEffect.SetActive(true);
+        direction = Vector2.zero;
+        SpriteSwap(false, false, false, false);
+    }
+
+    private void UpdateDeadEffect()
+    {
+        GetComponent<PhotonView>().RPC("DeadEffect", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void UpdateLeaderboardScoreRPC(int newScore)
+    {
+        leaderBoardScore.text = newScore.ToString();
+    }
+
+    private void UpdateLearBoardScore()
+    {
+        if (GetScore()>0)
+        {
+            GetComponent<PhotonView>().RPC("UpdateLeaderboardScoreRPC", RpcTarget.All, GetScore());
+        }
+    }
+
+
 
     public void UpdateScore()
     {
@@ -322,6 +407,9 @@ public class PlayerController : MonoBehaviour
         if (remainingLife == 0)
         {
             GameManager.Instance.GameOver();
+            canTouchControll = false;
+            UpdateDeadEffect();
+            Bridge.GetInstance().SendScore(GetScore());
         }
     }
 

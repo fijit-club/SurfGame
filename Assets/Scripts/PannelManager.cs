@@ -31,6 +31,7 @@ public class PannelManager : MonoBehaviour
         shopPannel.SetActive(true);
         hostPannel.SetActive(false);
         joinPannel.SetActive(false);
+        playPannel.SetActive(false);
     }
 
     public void ActivateStartPannel()
