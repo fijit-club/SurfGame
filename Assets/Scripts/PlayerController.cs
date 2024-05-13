@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour
     public GameObject jumpImgae;
     public GameObject deadEffect;
     public GameObject leaderBoardIcon;
-    public Sprite iconSprite;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -210,8 +209,9 @@ public class PlayerController : MonoBehaviour
     private void LeaderBoardDisplay()
     {
         GameObject obj= Instantiate(leaderBoardIcon, leadrboardContent.transform);
-        obj.GetComponent<Image>().sprite = iconSprite;
+        StartCoroutine(RoomManager.Instance.DownloadImage(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.avatar, obj.GetComponent<Image>()));
         leaderBoardScore = obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        leaderBoardScore.text = "0";
     }
 
     private IEnumerator OffCollider(int time)
@@ -231,7 +231,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SpeedMove()
     {
-        StartCoroutine(OffCollider(5));
+        StartCoroutine(OffCollider(4));
         isFlying = true;
         speed = baseSpeed*2;
         direction = Vector2.down;
