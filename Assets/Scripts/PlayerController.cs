@@ -119,6 +119,8 @@ public class PlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
+
+        UpdateLearBoardScore();
     }
 
 
@@ -147,7 +149,6 @@ public class PlayerController : MonoBehaviour
         {
             octopus.SetActive(true);
         }
-        UpdateLearBoardScore();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
