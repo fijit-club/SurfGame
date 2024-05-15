@@ -10771,7 +10771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8031dceb76215c74fbd08c4a2fdb6de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leaderBoardIconPref: {fileID: 4832308808587842248, guid: 7cf1ce727513b83449e739b039df5290, type: 3}
+  leaderBoardIconPref: {fileID: 8523769978774346144, guid: b3497dc088867954bab8a187438bcdbe, type: 3}
 --- !u!1 &6804499270854158950
 GameObject:
   m_ObjectHideFlags: 0

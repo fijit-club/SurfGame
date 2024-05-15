@@ -21,8 +21,8 @@ public class LeaderBoard : MonoBehaviour
     private void Start()
     {
         pv = GetComponent<PhotonView>();
-        parent= GameObject.Find("Game UI Reference").GetComponent<Transform>();
-       
+        parent = GameObject.Find("Game UI Reference").GetComponent<Transform>();
+
         LeaderBoardDisplay();
         slider.minValue = 0f;
         slider.maxValue = maxDistance;
@@ -40,6 +40,8 @@ public class LeaderBoard : MonoBehaviour
         slider.value = newPosition;
 
         pv.RPC("UpdateLeaderboardRPC", RpcTarget.All, newPosition);
+
+        DisplayTopPlayer();
     }
 
     [PunRPC]
@@ -56,20 +58,21 @@ public class LeaderBoard : MonoBehaviour
     {
         icon = Instantiate(leaderBoardIconPref, parent);
         slider = icon.GetComponent<Slider>();
-        leaderBoardName = icon.transform.GetChild(1).transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-        leaderBoardScore = icon.transform.GetChild(1).transform.GetChild(0).transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+        leaderBoardName = icon.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        leaderBoardScore = icon.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).GetComponent<TextMeshProUGUI>();
         Player photonPlayer = pv.Owner;
 
         if (pv.IsMine)
         {
-            icon.transform.GetChild(0).gameObject.SetActive(true);
+            icon.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
         }
         else
         {
-            icon.transform.GetChild(0).gameObject.SetActive(false);
+            icon.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         }
+
         string avatarURL = photonPlayer.CustomProperties["AvatarURL"].ToString();
-        StartCoroutine(RoomManager.Instance.DownloadImage(avatarURL, icon.transform.GetChild(1).transform.GetChild(0).transform.GetChild(1).transform.GetComponent<Image>()));
+        StartCoroutine(RoomManager.Instance.DownloadImage(avatarURL, icon.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).transform.GetComponent<Image>()));
 
         leaderBoardName.text = photonPlayer.NickName;
         leaderBoardScore.text = "0";
@@ -88,9 +91,42 @@ public class LeaderBoard : MonoBehaviour
 
     private void UpdateLearBoardScore()
     {
-        if (GetComponent<PlayerController>(). GetScore() > 0)
+        if (GetComponent<PlayerController>().GetScore() > 0)
         {
             GetComponent<PhotonView>().RPC("UpdateLeaderboardScoreRPC", RpcTarget.All, GetComponent<PlayerController>().GetScore());
         }
     }
+
+    private void DisplayTopPlayer()
+    {
+        float highestScore = float.MinValue;
+
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player.CustomProperties.ContainsKey("PlayerScore"))
+            {
+                float playerScore = (float)player.CustomProperties["PlayerScore"];
+                if (playerScore > highestScore)
+                {
+                    highestScore = playerScore;
+                }
+            }
+        }
+
+        if (highestScore > maxDistance)
+        {
+            maxDistance = highestScore;
+            pv.RPC("UpdateMaxDistanceRPC", RpcTarget.All, maxDistance);
+        }
+
+        print(maxDistance + "Maxdistance");
+    }
+
+    [PunRPC]
+    private void UpdateMaxDistanceRPC(float newMaxDistance)
+    {
+        maxDistance = newMaxDistance;
+        slider.maxValue = maxDistance;
+    }
 }
+

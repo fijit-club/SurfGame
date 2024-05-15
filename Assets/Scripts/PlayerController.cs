@@ -107,12 +107,23 @@ public class PlayerController : MonoBehaviour
         RestrictMovement();
         FollowPlayer();
         score += (rb.velocity.magnitude*Time.deltaTime)*10*scoreMultiplier;
+
+        gameObject.GetComponent<PhotonView>().RPC("UpdateScoreOnServer", RpcTarget.All, score);
+
         if (Time.time - lastSpeedIncreaseTime >= speedIncreaseInterval)
         {
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
     }
+
+
+    [PunRPC]
+    void UpdateScoreOnServer(float newScore)
+    {
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerScore", newScore } });
+    }
+
 
 
     private void IncreaseSpeed()

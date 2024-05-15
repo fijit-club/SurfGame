@@ -3599,8 +3599,8 @@ MonoBehaviour:
       saveData:
         selectedPlayer: 0
       multiplayer:
-        username: ddd
-        avatar: https://assets.fijit.club/fijit-v2/avatars/1.png
+        username: sss
+        avatar: https://assets.fijit.club/fijit-v2/avatars/12.png
         lobbyId: 095c91be-a376-4c74-805e-d153523c40af
         lobbySize: 3
         isHost: 1
