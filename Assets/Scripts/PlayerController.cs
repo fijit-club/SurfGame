@@ -26,10 +26,12 @@ public class PlayerController : MonoBehaviour
     private float speedIncreaseInterval = 10f;
     private float lastSpeedIncreaseTime;
     private int hitCount;
+    private float flickerInterval = 0.2f;
 
     private Coroutine chasingCoroutine;
     private Coroutine slowMoveCoroutine;
     private Coroutine speedMoveCoroutine;
+    private Coroutine flickerCoroutine;
 
     public GameObject octopus;
     public GameObject tral;
@@ -48,6 +50,7 @@ public class PlayerController : MonoBehaviour
     private TextMeshProUGUI coinTxt;
     private TextMeshProUGUI highScoreTxt;
     private List<GameObject> lifes = new List<GameObject>();
+    private GameObject lastLifeIndication;
     private int remainingLife = 3;
     private GameObject healthSymbols;
 
@@ -89,7 +92,7 @@ public class PlayerController : MonoBehaviour
         highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
         coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
         healthSymbols = GameObject.Find("HealthSymbols");
-        print(healthSymbols.transform.GetChild(0).name);
+        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
         for (int i = 0; i < 3; i++)
         {
             lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
@@ -170,6 +173,9 @@ public class PlayerController : MonoBehaviour
             RedueHealth();
             SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
             hitWithIsland = true;
+            flickerCoroutine = StartCoroutine(Flicker(straightImgae.transform));
+            flickerCoroutine = StartCoroutine(Flicker(leftImgae.transform));
+            flickerCoroutine = StartCoroutine(Flicker(rightImgae.transform));
         }
         if (collision.CompareTag("Slow"))
         {
@@ -381,6 +387,32 @@ public class PlayerController : MonoBehaviour
         coinTxt.text = GetCoins().ToString();
     }
 
+    public IEnumerator Flicker(Transform obj)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 2f)
+        {
+            foreach (Transform child in obj)
+            {
+                SpriteRenderer childSpriteRenderer = child.GetComponent<SpriteRenderer>();
+                if (childSpriteRenderer != null)
+                {
+                    childSpriteRenderer.enabled = !childSpriteRenderer.enabled;
+                }
+            }
+            yield return new WaitForSeconds(flickerInterval);
+            elapsedTime += flickerInterval;
+        }
+        if (elapsedTime >= 2f)
+        {
+            if (flickerCoroutine != null)
+            {
+                StopCoroutine(Flicker(obj));
+            }
+        }
+    }
+
     public void RedueHealth()
     {
         remainingLife--;
@@ -391,6 +423,10 @@ public class PlayerController : MonoBehaviour
             GameManager.Instance.GameOver();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
+        }
+        else if (remainingLife == 1)
+        {
+            lastLifeIndication.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
 

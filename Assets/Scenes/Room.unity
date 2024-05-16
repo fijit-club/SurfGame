@@ -3214,7 +3214,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1236379762}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7a9efeee31a0dba459b6c86d58c6cee1, type: 2}
   m_CullingMode: 0
@@ -3894,7 +3894,7 @@ MonoBehaviour:
       saveData:
         selectedPlayer: 0
       multiplayer:
-        username: mmm
+        username: AVA
         avatar: https://assets.fijit.club/fijit-v2/avatars/12.png
         lobbyId: 095c91be-a376-4c74-805e-d153523c40af
         lobbySize: 3
