@@ -29,7 +29,7 @@ public class LeaderBoard : MonoBehaviour
         slider.value = startSliderValue;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!pv.IsMine)
         {
@@ -118,8 +118,6 @@ public class LeaderBoard : MonoBehaviour
             maxDistance = highestScore;
             pv.RPC("UpdateMaxDistanceRPC", RpcTarget.All, maxDistance);
         }
-
-        print(maxDistance + "Maxdistance");
     }
 
     [PunRPC]

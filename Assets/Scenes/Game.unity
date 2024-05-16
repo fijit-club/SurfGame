@@ -3274,6 +3274,7 @@ MonoBehaviour:
   coinDestination: {fileID: 3620254171174005165}
   gameOVerScreen: {fileID: 8939974922912351474}
   startTimerTxt: {fileID: 1763720794}
+  wasteCollectEffect: {fileID: 5126031195147539341, guid: c5d4989ce3680a1479bb635ec7f3af43, type: 3}
   isGameOver: 0
 --- !u!1 &1702504200
 GameObject:

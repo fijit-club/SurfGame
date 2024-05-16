@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public RectTransform coinDestination;
     public GameObject gameOVerScreen;
     public TextMeshProUGUI startTimerTxt;
+    public GameObject wasteCollectEffect;
     public bool isGameOver;
 
     private void Awake()
@@ -60,6 +61,7 @@ public class GameManager : MonoBehaviour
 
     public void CoinAnimation(int count, Vector2 pos)
     {
+        Destroy(Instantiate(wasteCollectEffect, pos, Quaternion.identity), 1f);
         for (int i = 0; i < count; i++)
         {
             GameObject coin = Instantiate(coinPref, parent);

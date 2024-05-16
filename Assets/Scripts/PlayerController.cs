@@ -387,9 +387,9 @@ public class PlayerController : MonoBehaviour
         lifes[remainingLife].SetActive(false);
         if (remainingLife == 0)
         {
+            UpdateDeadEffect();
             GameManager.Instance.GameOver();
             canTouchControll = false;
-            UpdateDeadEffect();
             Bridge.GetInstance().SendScore(GetScore());
         }
     }
