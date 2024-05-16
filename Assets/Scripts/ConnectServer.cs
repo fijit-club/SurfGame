@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ConnectServer : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private PannelManager pannelInstance;
     private void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -16,6 +17,7 @@ public class ConnectServer : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        pannelInstance.ActivateShopOnConnectedToServer();
         print("ServerConnected");
     }
 }
