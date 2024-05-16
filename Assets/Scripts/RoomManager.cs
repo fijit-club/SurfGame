@@ -11,12 +11,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
     [SerializeField] private PannelManager pannelInstance;
-
-    [SerializeField] private TMP_InputField createText;
-    [SerializeField] private TMP_InputField joinText;
-    [SerializeField] private TMP_InputField playerCountText;
     [SerializeField] private GameObject nameListPref;
     [SerializeField] private GameObject playerListParent;
+    [SerializeField] private GameObject startGameBtn;
+    [SerializeField] private GameObject waitingToStartTxt;
     private Dictionary<int, GameObject> playerListObj;
     private string avatarURL;
 
@@ -62,13 +60,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
     }
 
-    public void JoinRoom()
-    {
-        PhotonNetwork.JoinRoom(joinText.text);
-    }
-
     public override void OnJoinedRoom()
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startGameBtn.SetActive(true);
+            waitingToStartTxt.SetActive(false);
+        }
+        else
+        {
+            startGameBtn.SetActive(false);
+            waitingToStartTxt.SetActive(true);
+        }
+
         playerListObj = new Dictionary<int, GameObject>();
         pannelInstance.ActivateStartPannel();
         Player[] players = PhotonNetwork.PlayerList;
@@ -87,6 +91,17 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startGameBtn.SetActive(true);
+            waitingToStartTxt.SetActive(false);
+        }
+        else
+        {
+            startGameBtn.SetActive(false);
+            waitingToStartTxt.SetActive(true);
+        }
+
         GameObject playerObject = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
         playerObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = newPlayer.NickName;
 
@@ -130,6 +145,17 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startGameBtn.SetActive(true);
+            waitingToStartTxt.SetActive(false);
+        }
+        else
+        {
+            startGameBtn.SetActive(false);
+            waitingToStartTxt.SetActive(true);
+        }
+
         Destroy(playerListObj[otherPlayer.ActorNumber]);
         playerListObj.Remove(otherPlayer.ActorNumber);
     }

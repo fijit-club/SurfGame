@@ -5,6 +5,8 @@ using UnityEngine;
 public class ConnectServer : MonoBehaviourPunCallbacks
 {
     [SerializeField] private PannelManager pannelInstance;
+    [SerializeField] private GameObject playBtcs;
+    public GameObject loadingTxt;
     private void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -17,7 +19,8 @@ public class ConnectServer : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        pannelInstance.ActivateShopOnConnectedToServer();
+        playBtcs.SetActive(true);
+        loadingTxt.SetActive(false);
         print("ServerConnected");
     }
 }
