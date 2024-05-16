@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PannelManager : MonoBehaviour
 {
-
+    [SerializeField] private GameObject loadingPannel;
     [SerializeField] private GameObject shopPannel;
     [SerializeField] private GameObject hostPannel;
     [SerializeField] private GameObject joinPannel;
@@ -40,5 +40,11 @@ public class PannelManager : MonoBehaviour
         shopPannel.SetActive(false);
         hostPannel.SetActive(false);
         joinPannel.SetActive(false);
+    }
+
+    public void ActivateShopOnConnectedToServer()
+    {
+        shopPannel.SetActive(true);
+        loadingPannel.SetActive(false);
     }
 }
