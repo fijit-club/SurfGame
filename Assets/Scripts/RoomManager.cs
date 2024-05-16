@@ -52,6 +52,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.BroadcastPropsChangeToAll = true;
+        roomOptions.EmptyRoomTtl = 0;
         PhotonNetwork.CreateRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId, roomOptions);
     }
 
@@ -158,6 +159,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         Destroy(playerListObj[otherPlayer.ActorNumber]);
         playerListObj.Remove(otherPlayer.ActorNumber);
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 0)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
     }
 
     public IEnumerator DownloadImage(string MediaUrl, Image profilePic)
