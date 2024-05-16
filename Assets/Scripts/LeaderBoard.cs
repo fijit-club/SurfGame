@@ -29,7 +29,7 @@ public class LeaderBoard : MonoBehaviour
         slider.value = startSliderValue;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!pv.IsMine)
         {
