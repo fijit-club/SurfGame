@@ -270,8 +270,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 167256569}
-  - component: {fileID: 167256568}
   - component: {fileID: 167256567}
+  - component: {fileID: 167256570}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -291,34 +291,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
+  m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!114 &167256568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 167256566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 15
-    m_Bottom: 0
-  m_ChildAlignment: 1
-  m_Spacing: 20
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
 --- !u!224 &167256569
 RectTransform:
   m_ObjectHideFlags: 0
@@ -334,11 +308,35 @@ RectTransform:
   m_Father: {fileID: 307026212}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.000015258789, y: -0.00022919563}
-  m_SizeDelta: {x: 0, y: 15}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -0.000015258789, y: 0}
+  m_SizeDelta: {x: -125.00003, y: -463.2483}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &167256570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167256566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 75
+    m_Bottom: 75
+  m_ChildAlignment: 1
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 150, y: 150}
+  m_Spacing: {x: 75, y: 90}
+  m_Constraint: 1
+  m_ConstraintCount: 2
 --- !u!1 &183830801
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,8 +696,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.000030518, y: 0}
+  m_AnchoredPosition: {x: 0, y: 17.4477}
+  m_SizeDelta: {x: 0, y: 17.4476}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &307026213
 MonoBehaviour:
@@ -3270,9 +3268,8 @@ MonoBehaviour:
   createText: {fileID: 1227973306}
   joinText: {fileID: 2114210990}
   playerCountText: {fileID: 2075192674}
-  nameListPref: {fileID: 1188103034248573844, guid: 24099f0c5d865d348b6d828d677b6767, type: 3}
+  nameListPref: {fileID: 5140187915314588093, guid: 24099f0c5d865d348b6d828d677b6767, type: 3}
   playerListParent: {fileID: 167256566}
-  isVisibile: 0
 --- !u!1 &1382801577
 GameObject:
   m_ObjectHideFlags: 0
@@ -3602,8 +3599,8 @@ MonoBehaviour:
       saveData:
         selectedPlayer: 0
       multiplayer:
-        username: Vyshak
-        avatar: https://assets.fijit.club/fijit-v2/avatars/2.png
+        username: ddd
+        avatar: https://assets.fijit.club/fijit-v2/avatars/1.png
         lobbyId: 095c91be-a376-4c74-805e-d153523c40af
         lobbySize: 3
         isHost: 1

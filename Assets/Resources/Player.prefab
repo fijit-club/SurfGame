@@ -10643,6 +10643,7 @@ GameObject:
   - component: {fileID: 6804499270830919069}
   - component: {fileID: 2004787575271512165}
   - component: {fileID: 4592523614394369031}
+  - component: {fileID: 4935971921919798919}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -10719,8 +10720,6 @@ MonoBehaviour:
   leftImgae: {fileID: 6804499270543437839}
   jumpImgae: {fileID: 6804499270261764954}
   deadEffect: {fileID: 3560275721388249627}
-  leaderBoardIcon: {fileID: 868464804492372006, guid: 78fe593c6412bdd44ad8ae46f5523124, type: 3}
-  iconSprite: {fileID: 21300000, guid: f098f5f9009b0984f9f5ca97d4aa7fc3, type: 3}
 --- !u!114 &2004787575271512165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10760,6 +10759,19 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &4935971921919798919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6804499270830919071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8031dceb76215c74fbd08c4a2fdb6de8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaderBoardIconPref: {fileID: 4832308808587842248, guid: 7cf1ce727513b83449e739b039df5290, type: 3}
 --- !u!1 &6804499270854158950
 GameObject:
   m_ObjectHideFlags: 0

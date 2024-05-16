@@ -47,6 +47,11 @@ MonoBehaviour:
   - UpdateScoreOnLeaderBoard
   - ScoreOnLeaderBoard
   - UpdateLeaderboardScoreRPC
+  - LeaderBoardDisplay
+  - MoveIconAlongSlider
+  - UpdateLeaderboardRPC
+  - UpdateMaxDistance
+  - UpdateMaxDistanceRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

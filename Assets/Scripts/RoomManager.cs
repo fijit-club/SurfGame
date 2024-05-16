@@ -2,6 +2,9 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 public class RoomManager : MonoBehaviourPunCallbacks
@@ -14,26 +17,36 @@ public class RoomManager : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_InputField playerCountText;
     [SerializeField] private GameObject nameListPref;
     [SerializeField] private GameObject playerListParent;
+    private Dictionary<int, GameObject> playerListObj;
+    private string avatarURL;
 
-    public bool isVisibile;
-
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+        avatarURL = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.avatar;
     }
 
     public void TryCreateRoom()
     {
         if (!Bridge.GetInstance().testing)
             PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+
+        // Set the avatar URL as a custom property
+        ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
+        playerCustomProperties.Add("AvatarURL", avatarURL);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerCustomProperties);
+
         CreateRoom();
     }
 
     private void CreateRoom()
     {
-        if (!Bridge.GetInstance().testing)
-            PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
         PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
     }
 
@@ -56,13 +69,32 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        playerListObj = new Dictionary<int, GameObject>();
         pannelInstance.ActivateStartPannel();
         Player[] players = PhotonNetwork.PlayerList;
-        for (int i = 0; i < players.Length; i++)
+        foreach (Player player in players)
         {
-            GameObject player = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
-            player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+            GameObject playerObject = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
+            playerObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = player.NickName;
+
+            // Get the avatar URL from custom properties
+            string avatarURL = (string)player.CustomProperties["AvatarURL"];
+
+            StartCoroutine(DownloadImage(avatarURL, playerObject.GetComponent<Image>()));
+            playerListObj.Add(player.ActorNumber, playerObject);
         }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        GameObject playerObject = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
+        playerObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = newPlayer.NickName;
+
+        // Get the avatar URL from custom properties
+        string avatarURL = (string)newPlayer.CustomProperties["AvatarURL"];
+
+        StartCoroutine(DownloadImage(avatarURL, playerObject.GetComponent<Image>()));
+        playerListObj.Add(newPlayer.ActorNumber, playerObject);
     }
 
     public void StartGame()
@@ -80,17 +112,42 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void LeaveRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+        pannelInstance.ActivateShopPannel();
     }
 
     public override void OnLeftRoom()
     {
-        pannelInstance.ActivateShopPannel();
+        foreach (var playerObj in playerListObj.Values)
+        {
+            Destroy(playerObj);
+        }
+        playerListObj.Clear();
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
+    public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        GameObject player = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
-        player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+        Destroy(playerListObj[otherPlayer.ActorNumber]);
+        playerListObj.Remove(otherPlayer.ActorNumber);
+    }
+
+    public IEnumerator DownloadImage(string MediaUrl, Image profilePic)
+    {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+        yield return request.SendWebRequest();
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.Log(request.error);
+        }
+        else
+        {
+            var tex = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            Sprite profileSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
+            profilePic.sprite = profileSprite;
+        }
     }
 }
+
