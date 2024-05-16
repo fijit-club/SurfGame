@@ -43,7 +43,7 @@ public class BGSpawner : MonoBehaviour
         while (true)
         {
             SpawnBG();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }
