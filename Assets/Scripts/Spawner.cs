@@ -35,11 +35,18 @@ public class Spawner : MonoBehaviour
 
     private void SpawnObs(GameObject obs, Transform pos)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.InRoom)
         {
-            return;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Instantiate(obs.name, pos.position, Quaternion.identity);
+            }
         }
-        PhotonNetwork.Instantiate(obs.name, pos.position, Quaternion.identity);
+        else
+        {
+            Instantiate(obs, pos.position, Quaternion.identity);
+        }
+       
     }
 
 

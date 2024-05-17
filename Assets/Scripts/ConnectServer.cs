@@ -9,6 +9,12 @@ public class ConnectServer : MonoBehaviourPunCallbacks
     public GameObject loadingTxt;
     private void Start()
     {
+        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize==0)
+        {
+            playBtcs.SetActive(true);
+            loadingTxt.SetActive(false);
+            return;
+        }
         PhotonNetwork.ConnectUsingSettings();
     }
 

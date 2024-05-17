@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
@@ -32,8 +33,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void TryCreateRoom()
     {
-        if (!Bridge.GetInstance().testing)
-            PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize==0)
+        {
+            SceneManager.LoadScene(2);
+            return;
+        }
+        PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
 
         // Set the avatar URL as a custom property
         ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();

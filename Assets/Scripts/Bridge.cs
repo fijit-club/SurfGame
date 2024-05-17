@@ -238,9 +238,6 @@ public class NativeAPI
             {
                 Debug.Log("buying default vehicle");
                 BuyPete("hill-climb-rover-1");
-                BuyPete("hill-climb-mars");
-                //BuyPete("hill-climb-moon");
-                //BuyPete("hill-climb-earth");
             }
 
             if (thisPlayerInfo.sound)
@@ -325,8 +322,14 @@ public class NativeAPI
 
     }
 
+    [ContextMenu("SinglePlayer")]
+    public void Testing()
+    {
+        SendInitialData("{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":null,\"multiplayer\":null},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
+    }
 
-        public int GetCoins()
+
+    public int GetCoins()
         {
             return thisPlayerInfo.coins;
         }

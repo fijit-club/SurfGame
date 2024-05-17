@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Shop : MonoBehaviour
 {
@@ -31,6 +32,11 @@ public class Shop : MonoBehaviour
     private void Start()
     {
         ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
+    }
+
+    public void play()
+    {
+        SceneManager.LoadScene(2);
     }
 
     private void Update()

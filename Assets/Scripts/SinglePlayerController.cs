@@ -1,14 +1,16 @@
 using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class SinglePlayerController : MonoBehaviour
 {
-    public static PlayerController Instance;
+    public static SinglePlayerController Instance;
+
+    public static Action onCamFollow;
 
     public int scoreMultiplier;
     public int coinMultiplier;
@@ -71,11 +73,12 @@ public class PlayerController : MonoBehaviour
     private void GameBegin()
     {
         canTouchControll = true;
+       // onCamFollow?.Invoke();
         GameManager.Instance.startTimerTxt.text = null;
         direction = Vector2.down;
         speed = baseSpeed;
         lastSpeedIncreaseTime = Time.time;
-        octopus= GameObject.FindWithTag("Monster");
+        octopus = GameObject.FindWithTag("Monster");
     }
 
     private void Start()
@@ -98,30 +101,16 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
-        {
-            return;
-        }
-
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
-        score += (rb.velocity.magnitude*Time.deltaTime)*10*scoreMultiplier;
-
-        gameObject.GetComponent<PhotonView>().RPC("UpdateScoreOnServer", RpcTarget.All, score);
+        score += (rb.velocity.magnitude * Time.deltaTime) * 10 * scoreMultiplier;
 
         if (Time.time - lastSpeedIncreaseTime >= speedIncreaseInterval)
         {
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
-    }
-
-
-    [PunRPC]
-    void UpdateScoreOnServer(float newScore)
-    {
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerScore", newScore } });
     }
 
 
@@ -134,10 +123,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
-        {
-            return;
-        }
         UpdateScore();
         if (Input.GetMouseButton(0))
         {
@@ -155,11 +140,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
-        {
-            return;
-        }
-
         if (collision.CompareTag("Obstacle"))
         {
             if (isChasing)
@@ -199,14 +179,14 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Monster"))
         {
             GameManager.Instance.GameOver();
-            UpdateDeadEffect();
+            DeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += 5*coinMultiplier;
-            GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
+            coins += 5 * coinMultiplier;
+            GameManager.Instance.CoinAnimation(coinMultiplier, collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
@@ -222,7 +202,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SlowMove()
     {
-        speed = baseSpeed/2;
+        speed = baseSpeed / 2;
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
     }
@@ -231,7 +211,7 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(OffCollider(4));
         isFlying = true;
-        speed = baseSpeed*2;
+        speed = baseSpeed * 2;
         direction = Vector2.down;
         SpriteSwap(false, false, false, true);
         transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
@@ -250,7 +230,7 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
         {
             SpriteSwap(true, false, false, false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -309,70 +289,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    [PunRPC]
     private void ActivateStraightImage(bool activate)
     {
         straightImgae.SetActive(activate);
     }
 
-    [PunRPC]
     private void ActivateJumpImage(bool activate)
     {
         jumpImgae.SetActive(activate);
     }
 
-    [PunRPC]
     private void ActivateRightImage(bool activate)
     {
         rightImgae.SetActive(activate);
     }
 
-    [PunRPC]
-    private  void ActivateLeftImage(bool activate)
+    private void ActivateLeftImage(bool activate)
     {
         leftImgae.SetActive(activate);
     }
 
-    private void UpdateStraightImage(bool activate)
-    {
-        GetComponent<PhotonView>().RPC("ActivateStraightImage", RpcTarget.All, activate);
-    }
-
-
-    private void UpdateJumpImage(bool activate)
-    {
-        GetComponent<PhotonView>().RPC("ActivateJumpImage", RpcTarget.All, activate);
-    }
-
-    private void UpdateRightImage(bool activate)
-    {
-        GetComponent<PhotonView>().RPC("ActivateRightImage", RpcTarget.All, activate);
-    }
-
-    private void UpdateLeftImage(bool activate)
-    {
-        GetComponent<PhotonView>().RPC("ActivateLeftImage", RpcTarget.All, activate);
-    }
-
     private void SpriteSwap(bool straight, bool left, bool right, bool jump)
     {
-        UpdateStraightImage(straight);
-        UpdateLeftImage(left);
-        UpdateRightImage(right);
-        UpdateJumpImage(jump);
+        ActivateStraightImage(straight);
+        ActivateLeftImage(left);
+        ActivateRightImage(right);
+        ActivateJumpImage(jump);
     }
 
-    [PunRPC]
     private void DeadEffect()
     {
         deadEffect.SetActive(true);
         direction = Vector2.zero;
         SpriteSwap(false, false, false, false);
-    }
-
-    private void UpdateDeadEffect()
-    {
-        GetComponent<PhotonView>().RPC("DeadEffect", RpcTarget.All);
     }
 
 
@@ -416,7 +365,7 @@ public class PlayerController : MonoBehaviour
         lifes[remainingLife].SetActive(false);
         if (remainingLife == 0)
         {
-            UpdateDeadEffect();
+            DeadEffect();
             GameManager.Instance.GameOver();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
@@ -437,6 +386,3 @@ public class PlayerController : MonoBehaviour
         return coins;
     }
 }
-
-
-

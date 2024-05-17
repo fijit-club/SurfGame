@@ -6,9 +6,9 @@ using Photon.Pun;
 public class BGSpawner : MonoBehaviour
 {
     public GameObject bgPref;
+    public GameObject singlePlayerBgPref;
     public Transform previousBg;
     public float bgLength;
-    private Transform player;
 
     private void Start()
     {
@@ -18,14 +18,23 @@ public class BGSpawner : MonoBehaviour
 
     public void SpawnBG()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.InRoom)
         {
-            return;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLength, 128);
+                GameObject newBG = PhotonNetwork.Instantiate(bgPref.name, nextSpawnPosition, Quaternion.identity);
+                newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+                previousBg = newBG.transform;
+            }
         }
-        Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLength, 128);
-        GameObject newBG = PhotonNetwork.Instantiate(bgPref.name, nextSpawnPosition, Quaternion.identity);
-        newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-        previousBg = newBG.transform;
+        else
+        {
+            Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLength, 128);
+            GameObject newBG = Instantiate(singlePlayerBgPref, nextSpawnPosition, Quaternion.identity);
+            newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            previousBg = newBG.transform;
+        }
     }
 
     //private void Update()
