@@ -33,7 +33,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void TryCreateRoom()
     {
-        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize==0)
+        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize <= 1 || Bridge.GetInstance().thisPlayerInfo.data.multiplayer == null)
         {
             SceneManager.LoadScene(2);
             return;

@@ -9,7 +9,7 @@ public class ConnectServer : MonoBehaviourPunCallbacks
     public GameObject loadingTxt;
     private void Start()
     {
-        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize==0)
+        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize <=1 || Bridge.GetInstance().thisPlayerInfo.data.multiplayer==null)
         {
             playBtcs.SetActive(true);
             loadingTxt.SetActive(false);
