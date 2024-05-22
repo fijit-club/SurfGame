@@ -50,7 +50,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     private void CreateRoom()
     {
-        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
+        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.chatLobbyId);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -58,12 +58,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.BroadcastPropsChangeToAll = true;
         roomOptions.EmptyRoomTtl = 0;
-        PhotonNetwork.CreateRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId, roomOptions);
+        PhotonNetwork.CreateRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.chatLobbyId, roomOptions);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
+        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.chatLobbyId);
     }
 
     public override void OnJoinedRoom()

@@ -32,6 +32,7 @@ public class SinglePlayerController : MonoBehaviour
     private Coroutine slowMoveCoroutine;
     private Coroutine speedMoveCoroutine;
     private Coroutine flickerCoroutine;
+    private Coroutine shieldCoroutine;
 
     public GameObject octopus;
     public GameObject tral;
@@ -40,11 +41,13 @@ public class SinglePlayerController : MonoBehaviour
     public GameObject leftImgae;
     public GameObject jumpImgae;
     public GameObject deadEffect;
+    public GameObject shieldAnim;
 
     private bool canTouchControll;
     private bool isChasing;
     private bool isFlying;
     private bool hitWithIsland;
+    private bool isShieldActivated;
 
     private TextMeshProUGUI scoreTxt;
     private TextMeshProUGUI coinTxt;
@@ -111,6 +114,8 @@ public class SinglePlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
+
+        RotateShieldAroundPlayer();
     }
 
 
@@ -142,6 +147,10 @@ public class SinglePlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Obstacle"))
         {
+            if (isShieldActivated)
+            {
+                return;
+            }
             if (isChasing)
             {
                 hitCount++;
@@ -156,6 +165,10 @@ public class SinglePlayerController : MonoBehaviour
         }
         if (collision.CompareTag("Slow"))
         {
+            if (isShieldActivated)
+            {
+                return;
+            }
             if (chasingCoroutine != null)
             {
                 StopCoroutine(chasingCoroutine);
@@ -190,6 +203,33 @@ public class SinglePlayerController : MonoBehaviour
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
+        if (collision.CompareTag("Shield"))
+        {
+            if (shieldCoroutine != null)
+            {
+                StopCoroutine(shieldCoroutine);
+            }
+            shieldCoroutine = StartCoroutine(ShildActivation());
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    private void RotateShieldAroundPlayer()
+    {
+        if (shieldAnim != null && isShieldActivated)
+        {
+            shieldAnim.transform.RotateAround(shieldAnim.transform.position, Vector3.forward, -5f);
+        }
+    }
+
+    private IEnumerator ShildActivation()
+    {
+        shieldAnim.SetActive(true);
+        isShieldActivated = true;
+        yield return new WaitForSeconds(6f);
+        shieldAnim.SetActive(false);
+        isShieldActivated = false;
     }
 
     private IEnumerator OffCollider(int time)

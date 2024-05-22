@@ -12,6 +12,10 @@ public class BGSpawner : MonoBehaviour
 
     private void Start()
     {
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
         SpawnBG();
         StartCoroutine(Spawn());
     }

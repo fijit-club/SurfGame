@@ -2255,7 +2255,6 @@ MonoBehaviour:
   vibrateOffImage: {fileID: 8607061328141590651}
   pausePanel: {fileID: 3620254170213599207}
   gamePanel: {fileID: 3620254171288186278}
-  leaderBoardPanel: {fileID: 0}
   scoreTxt: {fileID: 3620254169649759254}
   highScoreTxt: {fileID: 3620254170569536193}
   coinTxt: {fileID: 3620254170736745094}
@@ -2625,8 +2624,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e6d1b91afd5fd45b3bfa384bdbe28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgPref: {fileID: 9111448280170006861, guid: aa5d7e1cd78f29042811fcac96c854ca, type: 3}
-  singlePlayerBgPref: {fileID: 9111448280170006861, guid: 13feecc2fa906c1488f07a843598df0c, type: 3}
+  bgPref: {fileID: 0}
+  singlePlayerBgPref: {fileID: 9111448280170006861, guid: c9b0abff27bd86247903b4806e46136e, type: 3}
   previousBg: {fileID: 5947922281437772339}
   bgLength: 15
 --- !u!1 &1161615978
@@ -10461,6 +10460,7 @@ MonoBehaviour:
   - {fileID: 3788550264321240063, guid: 33e7c69e4453c704d9299c968768a607, type: 3}
   - {fileID: 8219230581126502739, guid: c3b76b66e9dad97489c2922577d64568, type: 3}
   - {fileID: 5990080087660833588, guid: 88daa0093a1498b468fc4c5ae3f0ac69, type: 3}
+  turtleObstacles: {fileID: 0}
   obsSpawnPos:
   - {fileID: 1331833069}
   - {fileID: 917184144}
@@ -10497,6 +10497,7 @@ MonoBehaviour:
   - {fileID: 336209294}
   - {fileID: 341732744}
   - {fileID: 37760836}
+  turtleObjSpawnPos: []
 --- !u!33 &5947922281437772336
 MeshFilter:
   m_ObjectHideFlags: 0

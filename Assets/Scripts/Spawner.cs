@@ -9,9 +9,11 @@ public class Spawner : MonoBehaviour
     public GameObject[] obstacles;
     public GameObject[] slowObstacles;
     public GameObject[] wasteObstacles;
+    public GameObject turtleObstacles;
     public Transform[] obsSpawnPos;
     public Transform[] slowObjSpawnPos;
     public Transform[] wasteObjSpawnPos;
+    public Transform[] turtleObjSpawnPos;
 
     private Vector3 lastPlayerPosition;
 
@@ -26,6 +28,12 @@ public class Spawner : MonoBehaviour
         SpawnObs(obstacles[Random.Range(0, obstacles.Length)], obsSpawnPos[Random.Range(0, obsSpawnPos.Length)]);
         SpawnObs(slowObstacles[Random.Range(0, slowObstacles.Length)], slowObjSpawnPos[Random.Range(0, slowObjSpawnPos.Length)]);
         SpawnObs(wasteObstacles[Random.Range(0, wasteObstacles.Length)], wasteObjSpawnPos[Random.Range(0, wasteObjSpawnPos.Length)]);
+
+        float turtleSpawnChance = 0.5f;
+        if (turtleObstacles != null && Random.value < turtleSpawnChance)
+        {
+            SpawnObs(turtleObstacles, turtleObjSpawnPos[Random.Range(0, turtleObjSpawnPos.Length)]);
+        }
 
         //lastPlayerPosition = SpawnerPhoton.Instance.playerPrefab[Shop.Instance.selectedPlayer].transform.position;
         //StartCoroutine(Spawn());

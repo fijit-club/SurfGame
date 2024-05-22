@@ -12,6 +12,7 @@ TagManager:
   - Monster
   - Waste
   - BG
+  - Shield
   layers:
   - Default
   - TransparentFX
