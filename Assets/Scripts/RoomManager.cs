@@ -16,6 +16,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject playerListParent;
     [SerializeField] private GameObject startGameBtn;
     [SerializeField] private GameObject waitingToStartTxt;
+    [SerializeField] private GameObject toggleSeaBtn;
     private Dictionary<int, GameObject> playerListObj;
     private string avatarURL;
 
@@ -72,11 +73,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             startGameBtn.SetActive(true);
             waitingToStartTxt.SetActive(false);
+            toggleSeaBtn.SetActive(true);
         }
         else
         {
             startGameBtn.SetActive(false);
             waitingToStartTxt.SetActive(true);
+            toggleSeaBtn.SetActive(false);
         }
 
         playerListObj = new Dictionary<int, GameObject>();
@@ -101,11 +104,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             startGameBtn.SetActive(true);
             waitingToStartTxt.SetActive(false);
+            toggleSeaBtn.SetActive(true);
         }
         else
         {
             startGameBtn.SetActive(false);
             waitingToStartTxt.SetActive(true);
+            toggleSeaBtn.SetActive(false);
         }
 
         GameObject playerObject = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
@@ -155,11 +160,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             startGameBtn.SetActive(true);
             waitingToStartTxt.SetActive(false);
+            toggleSeaBtn.SetActive(true);
         }
         else
         {
             startGameBtn.SetActive(false);
             waitingToStartTxt.SetActive(true);
+            toggleSeaBtn.SetActive(false);
         }
 
         Destroy(playerListObj[otherPlayer.ActorNumber]);

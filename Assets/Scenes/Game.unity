@@ -2625,10 +2625,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e6d1b91afd5fd45b3bfa384bdbe28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgPref: {fileID: 9111448280170006861, guid: 13feecc2fa906c1488f07a843598df0c, type: 3}
-  singlePlayerBgPref: {fileID: 0}
+  bgPref:
+  - {fileID: 9111448280170006861, guid: 13feecc2fa906c1488f07a843598df0c, type: 3}
+  - {fileID: 9111448280170006861, guid: ad2780636ba949d4a97969e6e950fb16, type: 3}
+  singlePlayerBgPref:
+  - {fileID: 0}
   previousBg: {fileID: 5947922281437772339}
   bgLength: 15
+  newMaterial:
+  - {fileID: 2100000, guid: 8d3bf20d9e62f424ba7828f6e852d6cc, type: 2}
+  - {fileID: 2100000, guid: 8120a549b24cd6c4db728829838cad6a, type: 2}
 --- !u!114 &1099254905
 MonoBehaviour:
   m_ObjectHideFlags: 0

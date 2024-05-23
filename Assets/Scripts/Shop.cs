@@ -3,6 +3,8 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Shop : MonoBehaviour
 {
@@ -24,6 +26,11 @@ public class Shop : MonoBehaviour
     public GameObject[] playerPrefabs;
     public GameObject[] playerPowers;
 
+
+    public int selectedSea;
+    public GameObject[] seaIcons;
+    public GameObject[] seaIconsRoom;
+
     public void Awake()
     {
         Instance = this;
@@ -32,6 +39,7 @@ public class Shop : MonoBehaviour
     private void Start()
     {
         ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
     }
 
     public void play()
@@ -77,6 +85,31 @@ public class Shop : MonoBehaviour
                 playerPrefabs[i].SetActive(false);
             }
         }
+    }
+
+    public void ToggleSea(bool toggle)
+    {
+        if (toggle)
+        {
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
+            selectedSea = 0;
+            seaIcons[0].SetActive(true);
+            seaIcons[1].SetActive(false);
+
+            seaIconsRoom[0].SetActive(true);
+            seaIconsRoom[1].SetActive(false);
+        }
+        else
+        {
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 1 } });
+            selectedSea = 1;
+            seaIcons[0].SetActive(false);
+            seaIcons[1].SetActive(true);
+
+            seaIconsRoom[0].SetActive(false);
+            seaIconsRoom[1].SetActive(true);
+        }
+
     }
 
     public void SelectedCar()
