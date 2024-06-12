@@ -3562,7 +3562,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8d3bf20d9e62f424ba7828f6e852d6cc, type: 2}
+  - {fileID: 2100000, guid: 8120a549b24cd6c4db728829838cad6a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3611,20 +3611,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacles:
-  - {fileID: 4003308996865973826, guid: 301a9f6655944ba4baeee78d16513350, type: 3}
-  - {fileID: 1940155232373119925, guid: c3cb514e53c94644a87d0e4fcc78676a, type: 3}
-  - {fileID: 6712447197722468339, guid: 140df58dcfca7d84c815d0a9c8e38cb6, type: 3}
-  - {fileID: 6577382094787237339, guid: 2f42c3489b93a604f878a566aa13d810, type: 3}
-  - {fileID: 357468790259372902, guid: 278ccfa2c5ff96449b87a14c1011d20c, type: 3}
+  - {fileID: 4003308996865973826, guid: 12b6e8db74cb5344b8e87171ab8eaff0, type: 3}
+  - {fileID: 1940155232373119925, guid: 96cceefd5c3a8744881df09f26a6b513, type: 3}
+  - {fileID: 1940155232373119925, guid: 00d5ee208d021b04db9bca31775e79fa, type: 3}
+  - {fileID: 6712447197722468339, guid: d1f1010bac031004eba6bf633645eead, type: 3}
+  - {fileID: 6577382094787237339, guid: a0ed007c726c5144db80dab77a58c173, type: 3}
+  - {fileID: 357468790259372902, guid: 69fbabbf6c4d3774ea5f267c483017a1, type: 3}
+  - {fileID: 357468790259372902, guid: fa47abe6ef50faf4f858acbd825c0c5f, type: 3}
   slowObstacles:
-  - {fileID: 7415212217773077002, guid: b5cbcdeaf6762af489087e038d2cdb78, type: 3}
-  - {fileID: 1180528296415660426, guid: d8e27d620457b3e458bd1950b5f2be34, type: 3}
+  - {fileID: 7415212217773077002, guid: 44d15c6df34ff5648b5fee3e78e7957d, type: 3}
+  - {fileID: 1180528296415660426, guid: 37bc71f6d9fcc7f40a2a15369c526cc4, type: 3}
+  - {fileID: 1180528296415660426, guid: 2aed40fb16b5ed24d8bb3e3f19fb28ec, type: 3}
   wasteObstacles:
-  - {fileID: 5099532797967090320, guid: 3adf10f7000089843bc9aad76aba3590, type: 3}
-  - {fileID: 3788550264321240063, guid: 33e7c69e4453c704d9299c968768a607, type: 3}
-  - {fileID: 8219230581126502739, guid: c3b76b66e9dad97489c2922577d64568, type: 3}
-  - {fileID: 5990080087660833588, guid: 88daa0093a1498b468fc4c5ae3f0ac69, type: 3}
-  turtleObstacles: {fileID: 8930568704294642274, guid: d469841923d0d4b4b954a6bbf85c8744, type: 3}
+  - {fileID: 5099532797967090320, guid: c277ddade64fb724eb441340161c5e57, type: 3}
+  - {fileID: 3788550264321240063, guid: 6725bac34bce5cb4ea0bda4e60f649ab, type: 3}
+  - {fileID: 8219230581126502739, guid: 9ef7f3255f89f7347918c1c949b6b331, type: 3}
+  - {fileID: 5990080087660833588, guid: 9416e32b260c75a4283847bbad6a0ea8, type: 3}
+  turtleObstacles: {fileID: 8930568704294642274, guid: db505852c37632548aff4568b0675803, type: 3}
   obsSpawnPos:
   - {fileID: 3240654541724064663}
   - {fileID: 3240654541316763114}

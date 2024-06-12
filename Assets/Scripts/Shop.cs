@@ -38,7 +38,7 @@ public class Shop : MonoBehaviour
 
     private void Start()
     {
-        ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
+        //ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
         PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
     }
 
@@ -155,7 +155,7 @@ public class Shop : MonoBehaviour
         useBtn.SetActive(true);
         buyBtn.SetActive(false);
         SelectedCar();
-        Bridge.GetInstance().BuyPete("hill-climb-"+itemName);
+        Bridge.GetInstance().BuyPete("surf-"+itemName);
     }
 
 
@@ -169,7 +169,7 @@ public class Shop : MonoBehaviour
         bool itemFound = false;
         foreach (Asset asset in Bridge.GetInstance().thisPlayerInfo.data.assets)
         {
-            if (asset.id == "hill-climb-" + itemName)
+            if (asset.id == "surf-"+itemName)
             {
                 itemFound = true;
                 break;

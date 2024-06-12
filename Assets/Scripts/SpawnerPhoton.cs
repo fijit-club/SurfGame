@@ -30,7 +30,7 @@ public class SpawnerPhoton : MonoBehaviourPunCallbacks
 	public void Spawn()
 	{
 		Transform randonPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length - 1)];
-		if (!PhotonNetwork.IsConnected)
+		if (!PhotonNetwork.IsConnected || Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize<=0)
 		{
 			//SceneManager.LoadScene("0");
 			player = Instantiate(singlePlayerPrefab[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer], randonPoint.position, Quaternion.identity);

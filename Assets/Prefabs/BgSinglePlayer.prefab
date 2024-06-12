@@ -3611,14 +3611,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacles:
+  - {fileID: 9111448280170006861}
   - {fileID: 4003308996865973826, guid: fdad0f8377d6f014ba94859b467264eb, type: 3}
   - {fileID: 1940155232373119925, guid: ce032ceea3a415241947572af08cc573, type: 3}
+  - {fileID: 1940155232373119925, guid: 60f9d040ccfb4f74aaa5a63b20498c83, type: 3}
   - {fileID: 6712447197722468339, guid: d9d0711aa4a47e94abf0a66eb8020579, type: 3}
   - {fileID: 6577382094787237339, guid: 8f09fe2678034004f9d405e4baa3ab10, type: 3}
   - {fileID: 357468790259372902, guid: c1295f41f78925b48b78383f95b1312b, type: 3}
+  - {fileID: 357468790259372902, guid: 3449623a41c130d48b7223d77e574a8c, type: 3}
   slowObstacles:
-  - {fileID: 1180528296415660426, guid: e3364c5c5849a0a489250ab687daf093, type: 3}
   - {fileID: 7415212217773077002, guid: 802662ae7e7a2144b9b017f46d5f1fd9, type: 3}
+  - {fileID: 1180528296415660426, guid: e3364c5c5849a0a489250ab687daf093, type: 3}
+  - {fileID: 1180528296415660426, guid: cde04ca81862eeb41a6d9da9cd783daf, type: 3}
   wasteObstacles:
   - {fileID: 5099532797967090320, guid: 05435bf2637e7ad4f89dcb36369e7fe7, type: 3}
   - {fileID: 3788550264321240063, guid: c19f4c7d8c062044a81a5aa2d06d3f68, type: 3}

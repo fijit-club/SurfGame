@@ -233,11 +233,11 @@ public class NativeAPI
             thisPlayerInfo = PlayerInfo.CreateFromJSON(json);
             Debug.Log(json);
         
-        //Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.value);
+        Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.selectedPlayer);
         if (thisPlayerInfo.data.assets.Count == 0)
             {
-                Debug.Log("buying default vehicle");
-                BuyPete("hill-climb-rover-1");
+                Debug.Log("buying default player");
+                BuyPete("surf-ava");
             }
 
             if (thisPlayerInfo.sound)
@@ -312,7 +312,7 @@ public class NativeAPI
         //SendInitialData("{\"coins\":30000,\"data\":{}}");
 
         SendInitialData(
-              "{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":null,\"multiplayer\":{\"chatLobbyId\":\"095c91be-a376-4c74-805e-d153523c40af\",\"avatar\":\"https://assets.fijit.club/fijit-v2/avatars/2.png\",\"isHost\":true,\"lobbySize\":3,\"username\":\"Vyshak\"}},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
+              "{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"surf-zane\"}],\"saveData\":null,\"multiplayer\":{\"chatLobbyId\":\"095c91be-a376-4c74-805e-d153523c40af\",\"avatar\":\"https://assets.fijit.club/fijit-v2/avatars/2.png\",\"isHost\":true,\"lobbySize\":3,\"username\":\"Vyshak\"}},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
 
         //SendInitialData("{\"coins\":34,\"data\":{\"petes\":[{\"id\":\"health-1\",\"attributes\":[{\"id\":\"bullet-1-speed\",\"level\":91},{\"id\":\"compo-1-power\",\"level\":92}]},{\"id\":\"bvb-cannon-2\",\"attributes\":[{\"id\":\"bvb-cannon-2-speed\",\"level\":3},{\"id\":\"bvb-cannon-2-power\",\"level\":2}]}]}}");
         //SendInitialData("{\"coins\": 123,\"data\": null}");
