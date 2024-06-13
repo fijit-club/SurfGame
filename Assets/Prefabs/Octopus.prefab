@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2199241090688092261}
   - component: {fileID: 1903069476091577939}
   m_Layer: 0
-  m_Name: Shark 1
+  m_Name: Octopus
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,7 +160,7 @@ Transform:
   m_GameObject: {fileID: 7693099494396224828}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.32, y: 0.32, z: 0.32}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2199241090688092261}
@@ -207,7 +207,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1172833056, guid: af3fdb163558fb14da959965c6972187, type: 3}
+  m_Sprite: {fileID: -858921982, guid: af3fdb163558fb14da959965c6972187, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

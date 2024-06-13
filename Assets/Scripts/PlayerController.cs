@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
-        RotateShieldAroundPlayer();
+       // RotateShieldAroundPlayer();
     }
 
     private void RotateShieldAroundPlayer()

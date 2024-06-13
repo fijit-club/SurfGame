@@ -29,7 +29,7 @@ public class Spawner : MonoBehaviour
         SpawnObs(slowObstacles[Random.Range(0, slowObstacles.Length)], slowObjSpawnPos[Random.Range(0, slowObjSpawnPos.Length)]);
         SpawnObs(wasteObstacles[Random.Range(0, wasteObstacles.Length)], wasteObjSpawnPos[Random.Range(0, wasteObjSpawnPos.Length)]);
 
-        float turtleSpawnChance = 0.5f;
+        float turtleSpawnChance = 0.2f;
         if (turtleObstacles != null && Random.value < turtleSpawnChance)
         {
             SpawnObs(turtleObstacles, turtleObjSpawnPos[Random.Range(0, turtleObjSpawnPos.Length)]);

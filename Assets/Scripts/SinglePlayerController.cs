@@ -115,7 +115,7 @@ public class SinglePlayerController : MonoBehaviour
             lastSpeedIncreaseTime = Time.time;
         }
 
-        RotateShieldAroundPlayer();
+        //RotateShieldAroundPlayer();
     }
 
 
