@@ -17,11 +17,14 @@ public class Shop : MonoBehaviour
     public Sprite[] itemSprites;
     private int itemPrice;
     public string[] itemNames;
+    public string[] playerNames;
+    public string[] itemDsicriptions;
     public GameObject buyBtn;
     public GameObject useBtn;
     public TextMeshProUGUI totalCoins;
     private string itemName;
-    //public TextMeshProUGUI itemNameTxt;
+    public TextMeshProUGUI itemNameTxt;
+    public TextMeshProUGUI itemDiscriptionTxt;
     public int[] prices;
     public GameObject[] playerPrefabs;
     public GameObject[] playerPowers;
@@ -54,8 +57,9 @@ public class Shop : MonoBehaviour
 
     public void ShowSaveData(int value)
     {
-        itemName = itemNames[value];
-        //itemNameTxt.text = itemNames[value];
+        itemName = playerNames[value];
+        itemNameTxt.text = itemNames[value];
+        itemDiscriptionTxt.text = itemDsicriptions[value];
         ShowPovwerUpStats(value);
         selectedPlayer = value;
         useBtn.SetActive(true);
@@ -163,7 +167,8 @@ public class Shop : MonoBehaviour
     {
         ShowPovwerUpStats(selectedPlayer);
         itemImage.sprite = itemSprites[selectedPlayer];
-       // itemNameTxt.text = itemNames[selectedPlayer];
+        itemNameTxt.text = playerNames[selectedPlayer];
+        itemDiscriptionTxt.text = itemDsicriptions[selectedPlayer];
         itemName = itemNames[selectedPlayer];
         SoundManager.Instance.PlaySound(SoundManager.Sounds.BottonClick);
         bool itemFound = false;
