@@ -8,6 +8,17 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
     public  SoundAudioClip[] gameSounds;
 
+    public AudioClip[] startAudios;
+
+    public AudioClip[] randomJack;
+    public AudioClip[] randomJulia;
+    public AudioClip[] randomZane;
+    public AudioClip[] randomAva;
+    public AudioClip[] randomEmma;
+
+    public AudioClip[] endAudios;
+
+
     private void Awake()
     {
         Instance = this;

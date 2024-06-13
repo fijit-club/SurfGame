@@ -2074,7 +2074,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 103.5, y: 202}
+  m_AnchoredPosition: {x: 103.5, y: 247}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &837056038
@@ -4642,7 +4642,7 @@ MonoBehaviour:
         username: Vyshak
         avatar: https://assets.fijit.club/fijit-v2/avatars/2.png
         chatLobbyId: 095c91be-a376-4c74-805e-d153523c40af
-        lobbySize: 14
+        lobbySize: 0
         isHost: 1
   coinsCollected: 11
   testing: 0
@@ -5561,6 +5561,53 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 358c682d181f204459dc5814bb2667da, type: 3}
   - sound: 7
     audioClip: {fileID: 8300000, guid: b11537a85a0ff6c4b88fcfcd80fb86d8, type: 3}
+  startAudios:
+  - {fileID: 8300000, guid: 76bbbb0c5751ea749b68da75b6c8b922, type: 3}
+  - {fileID: 8300000, guid: 037e6c74e9e0aa04fa0a8902b649a06f, type: 3}
+  - {fileID: 8300000, guid: 5a90bf87eda3b1c499e293abcd75392c, type: 3}
+  - {fileID: 8300000, guid: d849ee9aad627c5429463656eeb89b2c, type: 3}
+  - {fileID: 8300000, guid: ca8241074a0c2174daffb5666abc4779, type: 3}
+  - {fileID: 8300000, guid: 76bbbb0c5751ea749b68da75b6c8b922, type: 3}
+  randomJack:
+  - {fileID: 8300000, guid: 0c37293cdf6707b4fa181ac1f675a8cb, type: 3}
+  - {fileID: 8300000, guid: 5764db78c0de5d74aa9fe87abc95afb5, type: 3}
+  - {fileID: 8300000, guid: 6453777a64f5ecf458ee7e847ff649b3, type: 3}
+  - {fileID: 8300000, guid: f9f1c3e7801ddbd47a3ebf15d7f6cbec, type: 3}
+  - {fileID: 8300000, guid: e3d2a6aeaa22cc2478e5b65acfc35a2a, type: 3}
+  - {fileID: 8300000, guid: 049cbdee3bdadbc468c235c4802a3fcc, type: 3}
+  randomJulia:
+  - {fileID: 8300000, guid: bac0acd384be46240bda3de6cd0bfd67, type: 3}
+  - {fileID: 8300000, guid: 70a98708c82cf114cbc19e4045dbebf0, type: 3}
+  - {fileID: 8300000, guid: 189ded66fa95bdb4cbfe8a957b0df4cb, type: 3}
+  - {fileID: 8300000, guid: 92316b95a2fb9314a8aafaf7d8ef7139, type: 3}
+  - {fileID: 8300000, guid: b1b5306fe4a4c7149be8f75d13835606, type: 3}
+  randomZane:
+  - {fileID: 8300000, guid: 870a8689a15317d48a6ab44ae0e96dab, type: 3}
+  - {fileID: 8300000, guid: 3bc421b72b7742e449346555885e1854, type: 3}
+  - {fileID: 8300000, guid: 6b04fd9712ec3ca49a1db7eaff862de0, type: 3}
+  - {fileID: 8300000, guid: 4b046acdaf159844eabb8ff39f65c38d, type: 3}
+  - {fileID: 8300000, guid: aec44441e3767554baff23693d5ed7eb, type: 3}
+  - {fileID: 8300000, guid: f804e7028821beb4e89267337da60336, type: 3}
+  randomAva:
+  - {fileID: 8300000, guid: f169014790eba8142a51d0f5528ae48a, type: 3}
+  - {fileID: 8300000, guid: 250c11a091a69cb42ba05e81de2b56c2, type: 3}
+  - {fileID: 8300000, guid: 8c98faf5d872da942952f66f7c93e87d, type: 3}
+  - {fileID: 8300000, guid: d3a9d105cc2124f4aa459747c4ef0f3c, type: 3}
+  - {fileID: 8300000, guid: 03d2121c8d846414ca8f6284915cf45f, type: 3}
+  - {fileID: 8300000, guid: 3bedf57815cd0f94bbff6b9639865bca, type: 3}
+  - {fileID: 8300000, guid: 19899d047cf1f924695c7c3a5dd59fed, type: 3}
+  randomEmma:
+  - {fileID: 8300000, guid: 4454b9414be1c7547ba3a9dbaaac49dc, type: 3}
+  - {fileID: 8300000, guid: 46c5acbdfe5d26346afed4d54eb6e518, type: 3}
+  - {fileID: 8300000, guid: d849ee9aad627c5429463656eeb89b2c, type: 3}
+  - {fileID: 8300000, guid: e12326644d9cbe247b89a496d1027e25, type: 3}
+  endAudios:
+  - {fileID: 8300000, guid: fdfc24b0e81c45742a723f8dd712e3de, type: 3}
+  - {fileID: 8300000, guid: 42fdd6d5e986c49419fcf4c5046c120a, type: 3}
+  - {fileID: 8300000, guid: 87facaf1006b4c34996e7aff786e48ce, type: 3}
+  - {fileID: 8300000, guid: 7f60a2b3818e7924d9c5a03c2835c464, type: 3}
+  - {fileID: 8300000, guid: bf11e572c05acab42b4d5277a0bfa84a, type: 3}
+  - {fileID: 8300000, guid: 0c37293cdf6707b4fa181ac1f675a8cb, type: 3}
 --- !u!1 &1778864418
 GameObject:
   m_ObjectHideFlags: 0
@@ -7208,7 +7255,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -130}
+  m_AnchoredPosition: {x: 0, y: -102}
   m_SizeDelta: {x: 490, y: 238}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1452438300327095164
@@ -9343,7 +9390,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7510090083039719063
 RectTransform:
   m_ObjectHideFlags: 0

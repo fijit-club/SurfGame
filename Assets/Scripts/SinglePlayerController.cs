@@ -12,6 +12,8 @@ public class SinglePlayerController : MonoBehaviour
 
     public static Action onCamFollow;
 
+    public AudioSource gameSounds;
+    public AudioSource gameEndSounds;
     public int scoreMultiplier;
     public int coinMultiplier;
     public Rigidbody2D rb;
@@ -33,6 +35,7 @@ public class SinglePlayerController : MonoBehaviour
     private Coroutine speedMoveCoroutine;
     private Coroutine flickerCoroutine;
     private Coroutine shieldCoroutine;
+    private Coroutine randomAudioCoroutine;
 
     public GameObject octopus;
     public GameObject tral;
@@ -61,6 +64,8 @@ public class SinglePlayerController : MonoBehaviour
     {
         Instance = this;
         mainCamera = Camera.main;
+        gameSounds.clip = SoundManager.Instance.startAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+        gameSounds.Play();
     }
 
     private void OnEnable()
@@ -86,6 +91,32 @@ public class SinglePlayerController : MonoBehaviour
 
     private void Start()
     {
+
+        if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 0)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 1)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomAva));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 2)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomZane));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 3)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomEmma));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 4)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJulia));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 5)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
+        }
+
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
         SpriteSwap(true, false, false, false);
@@ -129,6 +160,7 @@ public class SinglePlayerController : MonoBehaviour
     private void Update()
     {
         UpdateScore();
+        
         if (Input.GetMouseButton(0))
         {
             OnTouchDrag(Input.mousePosition);
@@ -192,6 +224,12 @@ public class SinglePlayerController : MonoBehaviour
         if (collision.CompareTag("Monster"))
         {
             GameManager.Instance.GameOver();
+            if (randomAudioCoroutine != null)
+            {
+                StopCoroutine(randomAudioCoroutine);
+            }
+            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+            gameEndSounds.Play();
             DeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
@@ -212,6 +250,16 @@ public class SinglePlayerController : MonoBehaviour
             shieldCoroutine = StartCoroutine(ShildActivation());
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
+        }
+    }
+
+    private IEnumerator PlayRandomAudio(AudioClip[] audios)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(18f);
+            gameSounds.clip =audios[UnityEngine.Random.Range(0, audios.Length)];
+            gameSounds.Play();
         }
     }
 
@@ -407,6 +455,12 @@ public class SinglePlayerController : MonoBehaviour
         {
             DeadEffect();
             GameManager.Instance.GameOver();
+            if (randomAudioCoroutine != null)
+            {
+                StopCoroutine(randomAudioCoroutine);
+            }
+            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+            gameEndSounds.Play();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }

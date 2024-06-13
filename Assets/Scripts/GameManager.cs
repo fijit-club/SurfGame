@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         if (!isGameOver)
         {
             isGameOver = true;
-            SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
+            //SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
             gameOVerScreen.SetActive(true);
         }
     }
