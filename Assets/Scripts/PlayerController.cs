@@ -10,8 +10,8 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance;
 
-    public static Action onCamFollow;
-
+    public AudioSource gameSounds;
+    public AudioSource gameEndSounds;
     public int scoreMultiplier;
     public int coinMultiplier;
     public Rigidbody2D rb;
@@ -26,10 +26,14 @@ public class PlayerController : MonoBehaviour
     private float speedIncreaseInterval = 10f;
     private float lastSpeedIncreaseTime;
     private int hitCount;
+    private float flickerInterval = 0.2f;
 
     private Coroutine chasingCoroutine;
     private Coroutine slowMoveCoroutine;
     private Coroutine speedMoveCoroutine;
+    private Coroutine flickerCoroutine;
+    private Coroutine shieldCoroutine;
+    private Coroutine randomAudioCoroutine;
 
     public GameObject octopus;
     public GameObject tral;
@@ -38,16 +42,19 @@ public class PlayerController : MonoBehaviour
     public GameObject leftImgae;
     public GameObject jumpImgae;
     public GameObject deadEffect;
+    public GameObject shieldAnim;
 
     private bool canTouchControll;
     private bool isChasing;
     private bool isFlying;
     private bool hitWithIsland;
+    private bool isShieldActivated;
 
     private TextMeshProUGUI scoreTxt;
     private TextMeshProUGUI coinTxt;
     private TextMeshProUGUI highScoreTxt;
     private List<GameObject> lifes = new List<GameObject>();
+    private GameObject lastLifeIndication;
     private int remainingLife = 3;
     private GameObject healthSymbols;
 
@@ -55,6 +62,8 @@ public class PlayerController : MonoBehaviour
     {
         Instance = this;
         mainCamera = Camera.main;
+        gameSounds.clip = SoundManager.Instance.startAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+        gameSounds.Play();
     }
 
     private void OnEnable()
@@ -70,7 +79,6 @@ public class PlayerController : MonoBehaviour
     private void GameBegin()
     {
         canTouchControll = true;
-        onCamFollow?.Invoke();
         GameManager.Instance.startTimerTxt.text = null;
         direction = Vector2.down;
         speed = baseSpeed;
@@ -80,6 +88,31 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 0)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 1)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomAva));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 2)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomZane));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 3)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomEmma));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 4)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJulia));
+        }
+        else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 5)
+        {
+            randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
+        }
+
         float orthoSize = mainCamera.orthographicSize;
         camHalfWidth = orthoSize / 2;
         SpriteSwap(true, false, false, false);
@@ -89,7 +122,7 @@ public class PlayerController : MonoBehaviour
         highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
         coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
         healthSymbols = GameObject.Find("HealthSymbols");
-        print(healthSymbols.transform.GetChild(0).name);
+        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
         for (int i = 0; i < 3; i++)
         {
             lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
@@ -115,6 +148,34 @@ public class PlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
+       // RotateShieldAroundPlayer();
+    }
+
+    private IEnumerator PlayRandomAudio(AudioClip[] audios)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(18f);
+            gameSounds.clip = audios[UnityEngine.Random.Range(0, audios.Length)];
+            gameSounds.Play();
+        }
+    }
+
+    private void RotateShieldAroundPlayer()
+    {
+        if (shieldAnim != null && isShieldActivated)
+        {
+            shieldAnim.transform.RotateAround(shieldAnim.transform.position, Vector3.forward, -5f);
+        }
+    }
+
+    private IEnumerator ShildActivation()
+    {
+        shieldAnim.SetActive(true);
+        isShieldActivated = true;
+        yield return new WaitForSeconds(6f);
+        shieldAnim.SetActive(false);
+        isShieldActivated = false;
     }
 
 
@@ -162,6 +223,10 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Obstacle"))
         {
+            if (isShieldActivated)
+            {
+                return;
+            }
             if (isChasing)
             {
                 hitCount++;
@@ -170,9 +235,16 @@ public class PlayerController : MonoBehaviour
             RedueHealth();
             SoundManager.Instance.PlaySound(SoundManager.Sounds.LifeLost);
             hitWithIsland = true;
+            flickerCoroutine = StartCoroutine(Flicker(straightImgae.transform));
+            flickerCoroutine = StartCoroutine(Flicker(leftImgae.transform));
+            flickerCoroutine = StartCoroutine(Flicker(rightImgae.transform));
         }
         if (collision.CompareTag("Slow"))
         {
+            if (isShieldActivated)
+            {
+                return;
+            }
             if (chasingCoroutine != null)
             {
                 StopCoroutine(chasingCoroutine);
@@ -196,6 +268,12 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Monster"))
         {
             GameManager.Instance.GameOver();
+            if (randomAudioCoroutine != null)
+            {
+                StopCoroutine(randomAudioCoroutine);
+            }
+            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+            gameEndSounds.Play();
             UpdateDeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
@@ -204,6 +282,16 @@ public class PlayerController : MonoBehaviour
         {
             coins += 5*coinMultiplier;
             GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
+            SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
+            Destroy(collision.gameObject);
+        }
+        if (collision.CompareTag("Shield"))
+        {
+            if (shieldCoroutine != null)
+            {
+                StopCoroutine(shieldCoroutine);
+            }
+            shieldCoroutine = StartCoroutine(ShildActivation());
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
@@ -381,6 +469,32 @@ public class PlayerController : MonoBehaviour
         coinTxt.text = GetCoins().ToString();
     }
 
+    public IEnumerator Flicker(Transform obj)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 2f)
+        {
+            foreach (Transform child in obj)
+            {
+                SpriteRenderer childSpriteRenderer = child.GetComponent<SpriteRenderer>();
+                if (childSpriteRenderer != null)
+                {
+                    childSpriteRenderer.enabled = !childSpriteRenderer.enabled;
+                }
+            }
+            yield return new WaitForSeconds(flickerInterval);
+            elapsedTime += flickerInterval;
+        }
+        if (elapsedTime >= 2f)
+        {
+            if (flickerCoroutine != null)
+            {
+                StopCoroutine(Flicker(obj));
+            }
+        }
+    }
+
     public void RedueHealth()
     {
         remainingLife--;
@@ -389,8 +503,18 @@ public class PlayerController : MonoBehaviour
         {
             UpdateDeadEffect();
             GameManager.Instance.GameOver();
+            if (randomAudioCoroutine != null)
+            {
+                StopCoroutine(randomAudioCoroutine);
+            }
+            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+            gameEndSounds.Play();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
+        }
+        else if (remainingLife == 1)
+        {
+            lastLifeIndication.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
 

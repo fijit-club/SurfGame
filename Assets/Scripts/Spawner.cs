@@ -9,9 +9,11 @@ public class Spawner : MonoBehaviour
     public GameObject[] obstacles;
     public GameObject[] slowObstacles;
     public GameObject[] wasteObstacles;
+    public GameObject turtleObstacles;
     public Transform[] obsSpawnPos;
     public Transform[] slowObjSpawnPos;
     public Transform[] wasteObjSpawnPos;
+    public Transform[] turtleObjSpawnPos;
 
     private Vector3 lastPlayerPosition;
 
@@ -27,6 +29,12 @@ public class Spawner : MonoBehaviour
         SpawnObs(slowObstacles[Random.Range(0, slowObstacles.Length)], slowObjSpawnPos[Random.Range(0, slowObjSpawnPos.Length)]);
         SpawnObs(wasteObstacles[Random.Range(0, wasteObstacles.Length)], wasteObjSpawnPos[Random.Range(0, wasteObjSpawnPos.Length)]);
 
+        float turtleSpawnChance = 0.2f;
+        if (turtleObstacles != null && Random.value < turtleSpawnChance)
+        {
+            SpawnObs(turtleObstacles, turtleObjSpawnPos[Random.Range(0, turtleObjSpawnPos.Length)]);
+        }
+
         //lastPlayerPosition = SpawnerPhoton.Instance.playerPrefab[Shop.Instance.selectedPlayer].transform.position;
         //StartCoroutine(Spawn());
     }
@@ -35,11 +43,18 @@ public class Spawner : MonoBehaviour
 
     private void SpawnObs(GameObject obs, Transform pos)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.InRoom)
         {
-            return;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Instantiate(obs.name, pos.position, Quaternion.identity);
+            }
         }
-        PhotonNetwork.Instantiate(obs.name, pos.position, Quaternion.identity);
+        else
+        {
+            Instantiate(obs, pos.position, Quaternion.identity);
+        }
+       
     }
 
 

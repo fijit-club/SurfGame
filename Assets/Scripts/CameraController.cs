@@ -4,7 +4,7 @@ using System;
 
 public class CameraController : MonoBehaviour
 {
-    public PlayerController player;
+    public Transform player;
     public bool follow;
     private void Update()
     {
@@ -13,18 +13,18 @@ public class CameraController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerController.onCamFollow += OnPlayerGenerated;
+        SpawnerPhoton.onCamFollow += OnPlayerGenerated;
     }
 
     private void OnDisable()
     {
-        PlayerController.onCamFollow -= OnPlayerGenerated;
+        SpawnerPhoton.onCamFollow -= OnPlayerGenerated;
     }
 
     private void OnPlayerGenerated()
     {
         follow = true;
-        player = SpawnerPhoton.Instance.player.GetComponent<PlayerController>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void FollowPlayer()
@@ -33,5 +33,6 @@ public class CameraController : MonoBehaviour
         {
             transform.position = new Vector3(0, player.transform.position.y, -10);
         }
+
     }
 }

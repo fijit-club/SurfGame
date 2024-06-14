@@ -2,30 +2,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class BGSpawner : MonoBehaviour
 {
-    public GameObject bgPref;
+    public GameObject[] bgPref;
+    public GameObject[] singlePlayerBgPref;
     public Transform previousBg;
-    public float bgLength;
-    private Transform player;
+    public float bgLengthShaderBg;
+    public float bgLengthNoShaderBg;
+    public Material[] newMaterial;
+    public Sprite[] newSprite;
+    private int selectedSea;
 
     private void Start()
     {
-        SpawnBG();
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+        if (PhotonNetwork.InRoom)
+        {
+            selectedSea = (int)PhotonNetwork.MasterClient.CustomProperties["selectedSea"];
+        }
+        else
+        {
+            selectedSea = Shop.Instance.selectedSea;
+        }
+        //previousBg.GetComponent<MeshRenderer>().material = newMaterial[selectedSea];
+        previousBg.GetComponent<SpriteRenderer>().sprite = newSprite[selectedSea];
+        ////SpawnBG();
         StartCoroutine(Spawn());
     }
 
     public void SpawnBG()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.InRoom)
         {
-            return;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLengthNoShaderBg, 128);
+                GameObject newBG = PhotonNetwork.Instantiate(bgPref[selectedSea].name, nextSpawnPosition, Quaternion.identity);
+                //newBG.GetComponent<MeshRenderer>().material = newMaterial[selectedSea];
+                //newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+                previousBg = newBG.transform;
+            }
         }
-        Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLength, 128);
-        GameObject newBG = PhotonNetwork.Instantiate(bgPref.name, nextSpawnPosition, Quaternion.identity);
-        newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-        previousBg = newBG.transform;
+        else
+        {
+            Vector3 nextSpawnPosition = new Vector3(previousBg.position.x, previousBg.position.y - bgLengthNoShaderBg, 128);
+            GameObject newBG = Instantiate(singlePlayerBgPref[selectedSea], nextSpawnPosition, Quaternion.identity);
+            //newBG.GetComponent<MeshRenderer>().material = newMaterial[selectedSea];
+            //newBG.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            previousBg = newBG.transform;
+        }
     }
 
     //private void Update()

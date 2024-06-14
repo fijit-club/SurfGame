@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
@@ -15,6 +16,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject playerListParent;
     [SerializeField] private GameObject startGameBtn;
     [SerializeField] private GameObject waitingToStartTxt;
+    [SerializeField] private GameObject toggleSeaBtn;
     private Dictionary<int, GameObject> playerListObj;
     private string avatarURL;
 
@@ -32,8 +34,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void TryCreateRoom()
     {
-        if (!Bridge.GetInstance().testing)
-            PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
+        if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize <= 1 || Bridge.GetInstance().thisPlayerInfo.data.multiplayer == null)
+        {
+            SceneManager.LoadScene(2);
+            return;
+        }
+        PhotonNetwork.LocalPlayer.NickName = Bridge.GetInstance().thisPlayerInfo.data.multiplayer.username;
 
         // Set the avatar URL as a custom property
         ExitGames.Client.Photon.Hashtable playerCustomProperties = new ExitGames.Client.Photon.Hashtable();
@@ -45,19 +51,20 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     private void CreateRoom()
     {
-        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
+        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.chatLobbyId);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.BroadcastPropsChangeToAll = true;
-        PhotonNetwork.CreateRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId, roomOptions);
+        roomOptions.EmptyRoomTtl = 0;
+        PhotonNetwork.CreateRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.chatLobbyId, roomOptions);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbyId);
+        PhotonNetwork.JoinRoom(Bridge.GetInstance().thisPlayerInfo.data.multiplayer.chatLobbyId);
     }
 
     public override void OnJoinedRoom()
@@ -66,11 +73,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             startGameBtn.SetActive(true);
             waitingToStartTxt.SetActive(false);
+            toggleSeaBtn.SetActive(true);
         }
         else
         {
             startGameBtn.SetActive(false);
             waitingToStartTxt.SetActive(true);
+            toggleSeaBtn.SetActive(false);
         }
 
         playerListObj = new Dictionary<int, GameObject>();
@@ -95,11 +104,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             startGameBtn.SetActive(true);
             waitingToStartTxt.SetActive(false);
+            toggleSeaBtn.SetActive(true);
         }
         else
         {
             startGameBtn.SetActive(false);
             waitingToStartTxt.SetActive(true);
+            toggleSeaBtn.SetActive(false);
         }
 
         GameObject playerObject = Instantiate(nameListPref, Vector3.zero, Quaternion.identity, playerListParent.transform);
@@ -149,15 +160,23 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             startGameBtn.SetActive(true);
             waitingToStartTxt.SetActive(false);
+            toggleSeaBtn.SetActive(true);
         }
         else
         {
             startGameBtn.SetActive(false);
             waitingToStartTxt.SetActive(true);
+            toggleSeaBtn.SetActive(false);
         }
 
         Destroy(playerListObj[otherPlayer.ActorNumber]);
         playerListObj.Remove(otherPlayer.ActorNumber);
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 0)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
     }
 
     public IEnumerator DownloadImage(string MediaUrl, Image profilePic)

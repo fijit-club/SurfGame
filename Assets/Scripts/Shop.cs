@@ -2,6 +2,9 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Shop : MonoBehaviour
 {
@@ -14,14 +17,22 @@ public class Shop : MonoBehaviour
     public Sprite[] itemSprites;
     private int itemPrice;
     public string[] itemNames;
+    public string[] playerNames;
+    public string[] itemDsicriptions;
     public GameObject buyBtn;
     public GameObject useBtn;
     public TextMeshProUGUI totalCoins;
     private string itemName;
-    //public TextMeshProUGUI itemNameTxt;
+    public TextMeshProUGUI itemNameTxt;
+    public TextMeshProUGUI itemDiscriptionTxt;
     public int[] prices;
     public GameObject[] playerPrefabs;
     public GameObject[] playerPowers;
+
+
+    public int selectedSea;
+    public GameObject[] seaIcons;
+    public GameObject[] seaIconsRoom;
 
     public void Awake()
     {
@@ -30,7 +41,13 @@ public class Shop : MonoBehaviour
 
     private void Start()
     {
-        ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
+        //ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
+    }
+
+    public void play()
+    {
+        SceneManager.LoadScene(2);
     }
 
     private void Update()
@@ -40,8 +57,9 @@ public class Shop : MonoBehaviour
 
     public void ShowSaveData(int value)
     {
-        itemName = itemNames[value];
-        //itemNameTxt.text = itemNames[value];
+        itemName = playerNames[value];
+        itemNameTxt.text = itemNames[value];
+        itemDiscriptionTxt.text = itemDsicriptions[value];
         ShowPovwerUpStats(value);
         selectedPlayer = value;
         useBtn.SetActive(true);
@@ -71,6 +89,31 @@ public class Shop : MonoBehaviour
                 playerPrefabs[i].SetActive(false);
             }
         }
+    }
+
+    public void ToggleSea(bool toggle)
+    {
+        if (toggle)
+        {
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
+            selectedSea = 0;
+            seaIcons[0].SetActive(true);
+            seaIcons[1].SetActive(false);
+
+            seaIconsRoom[0].SetActive(true);
+            seaIconsRoom[1].SetActive(false);
+        }
+        else
+        {
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 1 } });
+            selectedSea = 1;
+            seaIcons[0].SetActive(false);
+            seaIcons[1].SetActive(true);
+
+            seaIconsRoom[0].SetActive(false);
+            seaIconsRoom[1].SetActive(true);
+        }
+
     }
 
     public void SelectedCar()
@@ -116,7 +159,7 @@ public class Shop : MonoBehaviour
         useBtn.SetActive(true);
         buyBtn.SetActive(false);
         SelectedCar();
-        Bridge.GetInstance().BuyPete("hill-climb-"+itemName);
+        Bridge.GetInstance().BuyPete("surf-"+itemName);
     }
 
 
@@ -124,13 +167,14 @@ public class Shop : MonoBehaviour
     {
         ShowPovwerUpStats(selectedPlayer);
         itemImage.sprite = itemSprites[selectedPlayer];
-       // itemNameTxt.text = itemNames[selectedPlayer];
+        itemNameTxt.text = playerNames[selectedPlayer];
+        itemDiscriptionTxt.text = itemDsicriptions[selectedPlayer];
         itemName = itemNames[selectedPlayer];
         SoundManager.Instance.PlaySound(SoundManager.Sounds.BottonClick);
         bool itemFound = false;
         foreach (Asset asset in Bridge.GetInstance().thisPlayerInfo.data.assets)
         {
-            if (asset.id == "hill-climb-" + itemName)
+            if (asset.id == "surf-"+itemName)
             {
                 itemFound = true;
                 break;
