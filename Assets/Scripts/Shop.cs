@@ -108,7 +108,11 @@ public class Shop : MonoBehaviour
             seaIconsRoom[1].SetActive(false);
 
             bgImgageSinglePlayer.sprite = menuBgs[0];
-            GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 0);
+
+            if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize > 1)
+            {
+                GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 0);
+            }
         }
         else
         {
@@ -122,7 +126,10 @@ public class Shop : MonoBehaviour
 
             bgImgageSinglePlayer.sprite = menuBgs[1];
 
-            GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 1);
+            if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize > 1)
+            {
+                GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 1);
+            }
         }
     }
 

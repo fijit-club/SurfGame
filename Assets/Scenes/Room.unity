@@ -4747,7 +4747,7 @@ MonoBehaviour:
         username: Vyshak
         avatar: https://assets.fijit.club/fijit-v2/avatars/2.png
         chatLobbyId: 095c91be-a376-4c74-805e-d153523c40af
-        lobbySize: 9
+        lobbySize: 3
         isHost: 1
   coinsCollected: 11
   testing: 0
