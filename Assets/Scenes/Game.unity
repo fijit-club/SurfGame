@@ -3361,6 +3361,7 @@ MonoBehaviour:
   gameOVerScreen: {fileID: 8939974922912351474}
   startTimerTxt: {fileID: 1763720794}
   wasteCollectEffect: {fileID: 5126031195147539341, guid: c5d4989ce3680a1479bb635ec7f3af43, type: 3}
+  sheidPopUp: {fileID: 6770740014391209672, guid: 66ae472104e7a84418804bca871a22ab, type: 3}
   isGameOver: 0
 --- !u!1 &1695915677
 GameObject:

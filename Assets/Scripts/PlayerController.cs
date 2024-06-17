@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     public GameObject jumpImgae;
     public GameObject deadEffect;
     public GameObject shieldAnim;
+    public GameObject shieldAura;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -171,13 +172,15 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator ShildActivation()
     {
+        GameManager.Instance.ShieldPopUp();
         shieldAnim.SetActive(true);
+        shieldAura.SetActive(true);
         isShieldActivated = true;
         yield return new WaitForSeconds(6f);
         shieldAnim.SetActive(false);
+        shieldAura.SetActive(false);
         isShieldActivated = false;
     }
-
 
     [PunRPC]
     void UpdateScoreOnServer(float newScore)
