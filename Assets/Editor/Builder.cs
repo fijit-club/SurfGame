@@ -8,7 +8,7 @@ class Builder
     {
 
         // Place all your scenes here
-        string[] scenes = { "Assets/Scenes/Room.unity","Assets/Scenes/Game.unity" };
+        string[] scenes = { "Assets/Scenes/Room.unity", "Assets/Scenes/Game.unity", "Assets/Scenes/SinglePlayer.unity" };
 
         string[] args = Environment.GetCommandLineArgs();
         string outputPath = "builds/raw/web"; // Set a default path if the argument is not provided
