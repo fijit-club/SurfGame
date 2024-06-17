@@ -29,6 +29,10 @@ public class Shop : MonoBehaviour
     public GameObject[] playerPrefabs;
     public GameObject[] playerPowers;
 
+    public Sprite[] menuBgs;
+    public Image bgImgageSinglePlayer;
+    public Image bgImgageMultiPlayer;
+
 
     public int selectedSea;
     public GameObject[] seaIcons;
@@ -102,6 +106,9 @@ public class Shop : MonoBehaviour
 
             seaIconsRoom[0].SetActive(true);
             seaIconsRoom[1].SetActive(false);
+
+            bgImgageSinglePlayer.sprite = menuBgs[0];
+            GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 0);
         }
         else
         {
@@ -112,8 +119,17 @@ public class Shop : MonoBehaviour
 
             seaIconsRoom[0].SetActive(false);
             seaIconsRoom[1].SetActive(true);
-        }
 
+            bgImgageSinglePlayer.sprite = menuBgs[1];
+
+            GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 1);
+        }
+    }
+
+    [PunRPC]
+    private void UpdateMultiplayerBackground(int bgIndex)
+    {
+        bgImgageMultiPlayer.sprite = menuBgs[bgIndex];
     }
 
     public void SelectedCar()

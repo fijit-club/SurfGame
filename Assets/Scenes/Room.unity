@@ -1231,6 +1231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 375347311}
   - component: {fileID: 375347310}
+  - component: {fileID: 375347312}
   m_Layer: 0
   m_Name: ShopManager
   m_TagString: Untagged
@@ -1302,6 +1303,11 @@ MonoBehaviour:
   - {fileID: 7510090083320538618}
   - {fileID: 7510090083078658742}
   - {fileID: 7510090083039719060}
+  menuBgs:
+  - {fileID: 21300000, guid: d21806c8ebf985946a260574ae7e8e31, type: 3}
+  - {fileID: 21300000, guid: 66d5fd9a2de864043a9d7b8d35501d6d, type: 3}
+  bgImgageSinglePlayer: {fileID: 7510090083020705891}
+  bgImgageMultiPlayer: {fileID: 872796727}
   selectedSea: 0
   seaIcons:
   - {fileID: 51568315}
@@ -1324,6 +1330,28 @@ Transform:
   m_Father: {fileID: 620775385}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &375347312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375347309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &384891348
 GameObject:
   m_ObjectHideFlags: 0
@@ -2255,7 +2283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d983c01b17a6e174f92d80f22d4670a4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d21806c8ebf985946a260574ae7e8e31, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4719,7 +4747,7 @@ MonoBehaviour:
         username: Vyshak
         avatar: https://assets.fijit.club/fijit-v2/avatars/2.png
         chatLobbyId: 095c91be-a376-4c74-805e-d153523c40af
-        lobbySize: 0
+        lobbySize: 9
         isHost: 1
   coinsCollected: 11
   testing: 0
