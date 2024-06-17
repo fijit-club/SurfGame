@@ -1269,12 +1269,12 @@ MonoBehaviour:
   - julia
   - jackson2
   playerNames:
-  - Jackson AKA
-  - Ava AKA
-  - Capslock AKA
-  - Emma AKA
-  - Julia AKA
-  - Jackson AKA
+  - Jackson
+  - Ava
+  - Capslock
+  - Emma
+  - Julia
+  - Jackson 2.0
   itemDsicriptions:
   - '"The Wave whisperer"'
   - '"The Golden Sea Siren"'
@@ -8799,7 +8799,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Jackson AKA
+  m_text: Jackson
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
   m_sharedMaterial: {fileID: 4460513457744854020, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
