@@ -2626,11 +2626,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgPref:
-  - {fileID: 7024025179630468104, guid: 0078dc2da5eb336419acf43cf94351f7, type: 3}
-  - {fileID: 7024025179630468104, guid: d2b93f3baff8b9e429fb7cd9cdddd223, type: 3}
+  - {fileID: 9111448280170006861, guid: 13feecc2fa906c1488f07a843598df0c, type: 3}
+  - {fileID: 9111448280170006861, guid: ad2780636ba949d4a97969e6e950fb16, type: 3}
   singlePlayerBgPref:
   - {fileID: 0}
-  previousBg: {fileID: 4648209385552862781}
+  previousBg: {fileID: 5947922281437772339}
   bgLengthShaderBg: 15
   bgLengthNoShaderBg: 20
   newMaterial:
@@ -10999,7 +10999,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4648209385552862784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13983,7 +13983,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6498191189009929440
 RectTransform:
   m_ObjectHideFlags: 0

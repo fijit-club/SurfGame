@@ -99,14 +99,14 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _FoamLevelDestination: 4
-    - _FoamOpacity: 0.01
+    - _FoamOpacity: 0
     - _FoamPower: 0.3944446
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
-    - _Noiselevel: 0.0286
+    - _Noiselevel: 0.0213
     - _OcclusionStrength: 1
     - _Opacity: 1
     - _Parallax: 0.02

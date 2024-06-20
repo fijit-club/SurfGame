@@ -4903,14 +4903,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thisPlayerInfo:
-    coins: 189400
+    coins: 0
     sound: 1
     vibration: 1
-    highScore: 1000
+    highScore: 0
     data:
-      assets:
-      - id: surf-emma
-        attributes: []
+      assets: []
       saveData:
         selectedPlayer: 0
       multiplayer:
@@ -9368,7 +9366,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &7510090082652434324
 MonoBehaviour:
   m_ObjectHideFlags: 0
