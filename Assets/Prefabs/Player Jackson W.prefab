@@ -10029,8 +10029,8 @@ Transform:
   m_GameObject: {fileID: 3802934961565148921}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3802934960930961011}
   - {fileID: 3802934960706298265}
@@ -10095,6 +10095,7 @@ MonoBehaviour:
   deadEffect: {fileID: 8115609564230507778}
   shieldAnim: {fileID: 199044366985557019}
   shieldAura: {fileID: 3488331274746932950}
+  sheidPopUp: {fileID: 0}
 --- !u!82 &1414052446560279279
 AudioSource:
   m_ObjectHideFlags: 0
