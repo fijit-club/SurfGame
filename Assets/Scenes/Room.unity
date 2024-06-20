@@ -525,7 +525,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 3.0000138, y: -535.99994}
-  m_SizeDelta: {x: 500, y: 50}
+  m_SizeDelta: {x: 571.5273, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &182179015
 MonoBehaviour:
@@ -549,8 +549,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '"The Wave Whisperer"'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
-  m_sharedMaterial: {fileID: 4460513457744854020, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 524c5ca4aa280174b8f7c7db5bdeaa1b, type: 2}
+  m_sharedMaterial: {fileID: -3463961389600412611, guid: 524c5ca4aa280174b8f7c7db5bdeaa1b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -577,9 +577,9 @@ MonoBehaviour:
   m_fontSize: 45
   m_fontSizeBase: 45
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 30
+  m_fontSizeMax: 45
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -1270,12 +1270,12 @@ MonoBehaviour:
   - julia
   - jackson2
   playerNames:
-  - Jackson
-  - Ava
-  - Capslock
-  - Emma
-  - Julia
-  - Jackson 2.0
+  - JACKSON
+  - AVA
+  - CAPZLOCK
+  - EMMA
+  - JULIA
+  - JACKSON 2.0
   itemDsicriptions:
   - '"The Wave Whisperer"'
   - '"The Golden Sea Siren"'
@@ -9076,8 +9076,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Jackson
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
-  m_sharedMaterial: {fileID: 4460513457744854020, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 524c5ca4aa280174b8f7c7db5bdeaa1b, type: 2}
+  m_sharedMaterial: {fileID: -3463961389600412611, guid: 524c5ca4aa280174b8f7c7db5bdeaa1b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9117,7 +9117,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

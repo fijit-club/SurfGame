@@ -62,7 +62,7 @@ public class Shop : MonoBehaviour
     public void ShowSaveData(int value)
     {
         itemName = playerNames[value];
-        itemNameTxt.text = itemNames[value];
+        itemNameTxt.text = playerNames[value];
         itemDiscriptionTxt.text = itemDsicriptions[value];
         ShowPovwerUpStats(value);
         selectedPlayer = value;
