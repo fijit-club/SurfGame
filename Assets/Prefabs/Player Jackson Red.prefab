@@ -10095,6 +10095,7 @@ MonoBehaviour:
   deadEffect: {fileID: 8115609564230507778}
   shieldAnim: {fileID: 199044366985557019}
   shieldAura: {fileID: 1054528263457805669}
+  sheidPopUp: {fileID: 0}
 --- !u!82 &1693592139513189785
 AudioSource:
   m_ObjectHideFlags: 0

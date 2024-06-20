@@ -10709,6 +10709,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f606f8bca7b5264c979ee4f1d005740, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSounds: {fileID: 0}
+  gameEndSounds: {fileID: 0}
   scoreMultiplier: 1
   coinMultiplier: 1
   rb: {fileID: 6804499270830919074}
@@ -10722,6 +10724,7 @@ MonoBehaviour:
   jumpImgae: {fileID: 6804499270261764954}
   deadEffect: {fileID: 3560275721388249627}
   shieldAnim: {fileID: 7467322199725881162}
+  shieldAura: {fileID: 0}
 --- !u!114 &2004787575271512165
 MonoBehaviour:
   m_ObjectHideFlags: 0
