@@ -237,7 +237,7 @@ public class NativeAPI
         if (thisPlayerInfo.data.assets.Count == 0)
             {
                 Debug.Log("buying default player");
-                BuyPete("surf-ava");
+               // BuyPete("surf-ava");
             }
 
             if (thisPlayerInfo.sound)
@@ -325,7 +325,7 @@ public class NativeAPI
     [ContextMenu("SinglePlayer")]
     public void Testing()
     {
-        SendInitialData("{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":null,\"multiplayer\":null},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
+        SendInitialData("{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":{\"selectedPlayer\":1},\"multiplayer\":null},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
     }
 
 

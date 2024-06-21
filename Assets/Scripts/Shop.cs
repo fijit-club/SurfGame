@@ -225,6 +225,7 @@ public class Shop : MonoBehaviour
                 useBtn.SetActive(true);
                 buyBtn.SetActive(false);
             }
+            Bridge.GetInstance().SaveData(selectedPlayer);
         }
     }
 
