@@ -1526,7 +1526,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 5.2
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6744,7 +6744,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -75, y: -100}
+  m_AnchoredPosition: {x: -70, y: -91.658}
   m_SizeDelta: {x: 53.4993, y: 56.3201}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3620254169903309618
@@ -9561,7 +9561,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 999999
+  m_text: 6534
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
   m_sharedMaterial: {fileID: 4460513457744854020, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
@@ -9624,7 +9624,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 28.676155, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10544,8 +10544,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 20, y: 0.000010967}
-  m_SizeDelta: {x: 196.005, y: 87.493}
+  m_AnchoredPosition: {x: 7.1017, y: 0.000010967}
+  m_SizeDelta: {x: 170.2085, y: 87.493}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3620254171727697698
 GameObject:
