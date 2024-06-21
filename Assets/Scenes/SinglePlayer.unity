@@ -14490,8 +14490,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: GAME OVER
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4885e3c7d71393342a1453dc76b52bb6, type: 2}
-  m_sharedMaterial: {fileID: 4460513457744854020, guid: fb9d0a6af63ca7e4db109bdb5cea9e90, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 524c5ca4aa280174b8f7c7db5bdeaa1b, type: 2}
+  m_sharedMaterial: {fileID: -3463961389600412611, guid: 524c5ca4aa280174b8f7c7db5bdeaa1b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
