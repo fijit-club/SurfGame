@@ -83,7 +83,7 @@ public class NativeAPI
         private static Bridge instance;
         public int coinsCollected = 0;
         public bool testing;
-
+    int tempScore = 0;
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
         private static extern void setScore(int score);
@@ -197,18 +197,24 @@ public class NativeAPI
 
         public void SendScore(int score)
         {
+        tempScore = score;
+        Invoke("SendScoreDelayed", 2f);
+        }
 
+         void SendScoreDelayed()
+         {
             Debug.Log(coinsCollected + "sent coin");
 #if UNITY_WEBGL && !UNITY_EDITOR
             updateCoins(coinsCollected);
 #endif
 #if UNITY_WEBGL && !UNITY_EDITOR
 
-            setScore(score);
+            setScore(tempScore);
 #elif UNITY_EDITOR
-            Debug.Log("sendingscore" + score);
+            Debug.Log("sendingscore" + tempScore);
 #endif
-        }
+
+         }
 
         public void Mute()
         {
