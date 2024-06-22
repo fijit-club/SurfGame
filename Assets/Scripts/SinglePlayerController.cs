@@ -238,7 +238,7 @@ public class SinglePlayerController : MonoBehaviour
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += 5 * coinMultiplier;
+            coins += 10 * coinMultiplier;
             GameManager.Instance.CoinAnimation(coinMultiplier, collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
