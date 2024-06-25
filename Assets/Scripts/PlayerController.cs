@@ -89,6 +89,26 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        RandomAudios();
+
+        float orthoSize = mainCamera.orthographicSize;
+        camHalfWidth = orthoSize / 2;
+        SpriteSwap(true, false, false, false);
+        Instantiate(octopus);
+
+        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
+        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
+        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        healthSymbols = GameObject.Find("HealthSymbols");
+        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
+        for (int i = 0; i < 3; i++)
+        {
+            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
+        }
+    }
+
+    private void RandomAudios()
+    {
         if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 0)
         {
             randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
@@ -112,21 +132,6 @@ public class PlayerController : MonoBehaviour
         else if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 5)
         {
             randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
-        }
-
-        float orthoSize = mainCamera.orthographicSize;
-        camHalfWidth = orthoSize / 2;
-        SpriteSwap(true, false, false, false);
-        Instantiate(octopus);
-
-        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
-        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
-        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
-        healthSymbols = GameObject.Find("HealthSymbols");
-        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
-        for (int i = 0; i < 3; i++)
-        {
-            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
         }
     }
 
@@ -267,6 +272,17 @@ public class PlayerController : MonoBehaviour
                 StopCoroutine(SpeedMove());
             }
             speedMoveCoroutine = StartCoroutine(SpeedMove());
+            if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 1)
+            {
+                SoundManager.Instance.PlaySound(SoundManager.Sounds.AvaAir);
+
+                if (randomAudioCoroutine != null)
+                {
+                    StopCoroutine(randomAudioCoroutine);
+                }
+                RandomAudios();
+            }
+          
         }
         if (collision.CompareTag("Monster"))
         {
@@ -333,9 +349,9 @@ public class PlayerController : MonoBehaviour
 
     private void RestrictMovement()
     {
-        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
+        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.75f, camHalfWidth - 0.75f), transform.position.y);
 
-        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
+        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.75f && !isFlying)
         {
             SpriteSwap(true, false, false, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);

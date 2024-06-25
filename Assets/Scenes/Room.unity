@@ -159,7 +159,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 33, y: 0}
-  m_SizeDelta: {x: 107.5, y: 52}
+  m_SizeDelta: {x: 89.583336, y: 43.333332}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &25964210
 MonoBehaviour:
@@ -235,7 +235,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 27.999964, y: 0}
-  m_SizeDelta: {x: 107.5, y: 52}
+  m_SizeDelta: {x: 89.583336, y: 43.333332}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &51568317
 MonoBehaviour:
@@ -1651,7 +1651,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -43.222, y: -597}
+  m_AnchoredPosition: {x: -43.222046, y: -597}
   m_SizeDelta: {x: -86.4436, y: -1163.329}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &631356535
@@ -3253,7 +3253,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 28, y: 0}
-  m_SizeDelta: {x: 107.5, y: 52}
+  m_SizeDelta: {x: 89.583336, y: 43.333332}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1155404327
 MonoBehaviour:
@@ -5038,10 +5038,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thisPlayerInfo:
-    coins: 0
+    coins: 1894
     sound: 1
     vibration: 1
-    highScore: 0
+    highScore: 1000
     data:
       assets: []
       saveData:
@@ -5969,6 +5969,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 358c682d181f204459dc5814bb2667da, type: 3}
   - sound: 7
     audioClip: {fileID: 8300000, guid: b11537a85a0ff6c4b88fcfcd80fb86d8, type: 3}
+  - sound: 8
+    audioClip: {fileID: 8300000, guid: 250c11a091a69cb42ba05e81de2b56c2, type: 3}
   startAudios:
   - {fileID: 8300000, guid: 76bbbb0c5751ea749b68da75b6c8b922, type: 3}
   - {fileID: 8300000, guid: 037e6c74e9e0aa04fa0a8902b649a06f, type: 3}
@@ -5990,15 +5992,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b1b5306fe4a4c7149be8f75d13835606, type: 3}
   randomZane:
   - {fileID: 8300000, guid: 870a8689a15317d48a6ab44ae0e96dab, type: 3}
-  - {fileID: 8300000, guid: 3bc421b72b7742e449346555885e1854, type: 3}
   - {fileID: 8300000, guid: 6b04fd9712ec3ca49a1db7eaff862de0, type: 3}
   - {fileID: 8300000, guid: 4b046acdaf159844eabb8ff39f65c38d, type: 3}
   - {fileID: 8300000, guid: aec44441e3767554baff23693d5ed7eb, type: 3}
   - {fileID: 8300000, guid: f804e7028821beb4e89267337da60336, type: 3}
   randomAva:
   - {fileID: 8300000, guid: f169014790eba8142a51d0f5528ae48a, type: 3}
-  - {fileID: 8300000, guid: 250c11a091a69cb42ba05e81de2b56c2, type: 3}
-  - {fileID: 8300000, guid: 8c98faf5d872da942952f66f7c93e87d, type: 3}
   - {fileID: 8300000, guid: d3a9d105cc2124f4aa459747c4ef0f3c, type: 3}
   - {fileID: 8300000, guid: 03d2121c8d846414ca8f6284915cf45f, type: 3}
   - {fileID: 8300000, guid: 3bedf57815cd0f94bbff6b9639865bca, type: 3}
@@ -6203,7 +6202,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 32.99998, y: 0}
-  m_SizeDelta: {x: 107.5, y: 52}
+  m_SizeDelta: {x: 89.583336, y: 43.333332}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1797560565
 MonoBehaviour:
@@ -8422,7 +8421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &3062642703697114258
 MonoBehaviour:
   m_ObjectHideFlags: 0
