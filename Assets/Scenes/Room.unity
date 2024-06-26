@@ -5956,7 +5956,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameSounds:
   - sound: 0
-    audioClip: {fileID: 8300000, guid: ec175c65cc5f4c844b7e7d1da45a2850, type: 3}
+    audioClip: {fileID: 8300000, guid: e7bb8378acf057e47be3188c8fdc4857, type: 3}
   - sound: 1
     audioClip: {fileID: 8300000, guid: f3c6fa1c798c49d488a18fff6e5604a2, type: 3}
   - sound: 2
