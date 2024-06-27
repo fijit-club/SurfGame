@@ -154,7 +154,6 @@ public class NativeAPI
 #if UNITY_WEBGL && !UNITY_EDITOR
             load();
 #endif
-            SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
         }
             else
                 Destroy(this);
