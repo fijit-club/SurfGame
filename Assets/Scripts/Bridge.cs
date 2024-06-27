@@ -154,8 +154,8 @@ public class NativeAPI
 #if UNITY_WEBGL && !UNITY_EDITOR
             load();
 #endif
-
-            }
+            SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+        }
             else
                 Destroy(this);
 
@@ -255,9 +255,10 @@ public class NativeAPI
             Mute();
 
             }
-            //Replay();
-            //Events.CoinsCountChanged.Call();
-        }
+        //Replay();
+        //Events.CoinsCountChanged.Call();
+       
+    }
 
         public void AddCoin()
         {
