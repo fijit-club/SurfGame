@@ -6010,9 +6010,9 @@ MonoBehaviour:
   endAudios:
   - {fileID: 8300000, guid: fdfc24b0e81c45742a723f8dd712e3de, type: 3}
   - {fileID: 8300000, guid: 42fdd6d5e986c49419fcf4c5046c120a, type: 3}
-  - {fileID: 8300000, guid: 87facaf1006b4c34996e7aff786e48ce, type: 3}
+  - {fileID: 8300000, guid: f804e7028821beb4e89267337da60336, type: 3}
   - {fileID: 8300000, guid: 7f60a2b3818e7924d9c5a03c2835c464, type: 3}
-  - {fileID: 8300000, guid: bf11e572c05acab42b4d5277a0bfa84a, type: 3}
+  - {fileID: 8300000, guid: 189ded66fa95bdb4cbfe8a957b0df4cb, type: 3}
   - {fileID: 8300000, guid: 0c37293cdf6707b4fa181ac1f675a8cb, type: 3}
 --- !u!1 &1778864418
 GameObject:

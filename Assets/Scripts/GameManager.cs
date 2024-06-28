@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-       
+        SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
         StartCoroutine(StartTimer());
     }
 

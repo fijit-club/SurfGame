@@ -197,7 +197,7 @@ public class NativeAPI
         public void SendScore(int score)
         {
         tempScore = score;
-        Invoke("SendScoreDelayed", 2f);
+        Invoke("SendScoreDelayed", 4f);
         }
 
          void SendScoreDelayed()
