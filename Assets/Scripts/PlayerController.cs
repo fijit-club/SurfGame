@@ -197,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
     private void IncreaseSpeed()
     {
-        baseSpeed += 20f;
+        baseSpeed += 35f;
         speed = baseSpeed;
     }
 
@@ -291,8 +291,12 @@ public class PlayerController : MonoBehaviour
             {
                 StopCoroutine(randomAudioCoroutine);
             }
-            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
-            gameEndSounds.Play();
+            if (SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer] != null)
+            {
+                gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+                gameEndSounds.Play();
+            }
+           
             UpdateDeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
@@ -526,8 +530,11 @@ public class PlayerController : MonoBehaviour
             {
                 StopCoroutine(randomAudioCoroutine);
             }
-            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
-            gameEndSounds.Play();
+            if (SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer] != null)
+            {
+                gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+                gameEndSounds.Play();
+            }
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }

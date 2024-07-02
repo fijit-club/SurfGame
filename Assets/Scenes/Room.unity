@@ -1651,7 +1651,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -43.222046, y: -597}
+  m_AnchoredPosition: {x: -43.222107, y: -597}
   m_SizeDelta: {x: -86.4436, y: -1163.329}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &631356535
@@ -1799,7 +1799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &636754576
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2252,7 +2252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &837056037
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5043,9 +5043,13 @@ MonoBehaviour:
     vibration: 1
     highScore: 1000
     data:
-      assets: []
+      assets:
+      - id: player-1
+        attributes: []
+      - id: knife-hit-knife-20
+        attributes: []
       saveData:
-        selectedPlayer: 0
+        selectedPlayer: 1
       multiplayer:
         username: 
         avatar: 
@@ -5971,6 +5975,8 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: b11537a85a0ff6c4b88fcfcd80fb86d8, type: 3}
   - sound: 8
     audioClip: {fileID: 8300000, guid: 250c11a091a69cb42ba05e81de2b56c2, type: 3}
+  - sound: 9
+    audioClip: {fileID: 8300000, guid: 480da2d1cc4163e469d179e2260ba53b, type: 3}
   startAudios:
   - {fileID: 8300000, guid: 76bbbb0c5751ea749b68da75b6c8b922, type: 3}
   - {fileID: 8300000, guid: 037e6c74e9e0aa04fa0a8902b649a06f, type: 3}
@@ -6010,9 +6016,9 @@ MonoBehaviour:
   endAudios:
   - {fileID: 8300000, guid: fdfc24b0e81c45742a723f8dd712e3de, type: 3}
   - {fileID: 8300000, guid: 42fdd6d5e986c49419fcf4c5046c120a, type: 3}
-  - {fileID: 8300000, guid: f804e7028821beb4e89267337da60336, type: 3}
-  - {fileID: 8300000, guid: 7f60a2b3818e7924d9c5a03c2835c464, type: 3}
-  - {fileID: 8300000, guid: 189ded66fa95bdb4cbfe8a957b0df4cb, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 8300000, guid: 0c37293cdf6707b4fa181ac1f675a8cb, type: 3}
 --- !u!1 &1778864418
 GameObject:
@@ -9543,7 +9549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7510090082652434324
 MonoBehaviour:
   m_ObjectHideFlags: 0

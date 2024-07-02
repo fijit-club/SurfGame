@@ -103,7 +103,8 @@ public class SoundManager : MonoBehaviour
         EndGame,
         SpeedBoost,
         CoinPick,
-        AvaAir
+        AvaAir,
+        BgmCapslock
     }
     
 
