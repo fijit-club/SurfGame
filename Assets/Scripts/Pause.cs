@@ -57,12 +57,15 @@ public class Pause : MonoBehaviour
         pausePanel.SetActive(false);
         if (PhotonNetwork.InRoom)
         {
-            Bridge.GetInstance().SendScore(PlayerController.Instance.GetScore());
+            Bridge.GetInstance().SendScoreDelayed(PlayerController.Instance.GetScore());
         }
         else
         {
-            Bridge.GetInstance().SendScore(SinglePlayerController.Instance.GetScore());
+            Bridge.GetInstance().SendScoreDelayed(SinglePlayerController.Instance.GetScore());
+            Debug.Log("here");
+            
         }
+        //Time.timeScale = 1;
     }
 
     public void ExitFromMainMenu()

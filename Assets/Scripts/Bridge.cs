@@ -198,6 +198,7 @@ public class NativeAPI
         {
         tempScore = score;
         Invoke("SendScoreDelayed", 4f);
+        Debug.Log("here 2"+ score+"  "+tempScore);
         }
 
          void SendScoreDelayed()
@@ -211,6 +212,20 @@ public class NativeAPI
             setScore(tempScore);
 #elif UNITY_EDITOR
             Debug.Log("sendingscore" + tempScore);
+#endif
+
+         }
+     public void SendScoreDelayed(int score)
+         {
+            Debug.Log(coinsCollected + "sent coin");
+#if UNITY_WEBGL && !UNITY_EDITOR
+            updateCoins(coinsCollected);
+#endif
+#if UNITY_WEBGL && !UNITY_EDITOR
+
+            setScore(score);
+#elif UNITY_EDITOR
+            Debug.Log("sendingscore" + score);
 #endif
 
          }
