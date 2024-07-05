@@ -251,7 +251,8 @@ public class NativeAPI
         public void SendInitialData(string json)
         {
             thisPlayerInfo = PlayerInfo.CreateFromJSON(json);
-            Debug.Log(json);
+            thisPlayerInfo.data.multiplayer.chatLobbyId = thisPlayerInfo.data.multiplayer.chatLobbyId.Substring(0, 5);
+        Debug.Log(json);
         
         Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.selectedPlayer);
         if (thisPlayerInfo.data.assets.Count == 0)
