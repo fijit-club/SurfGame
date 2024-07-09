@@ -36,6 +36,7 @@ public class Pause : MonoBehaviour
         pausePanel.SetActive(true);
         Time.timeScale = 0;
         gamePanel.SetActive(false);
+        UpdatePauseMenu();
     }
 
     public void Resume()

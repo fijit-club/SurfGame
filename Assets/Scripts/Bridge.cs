@@ -251,10 +251,11 @@ public class NativeAPI
         public void SendInitialData(string json)
         {
             thisPlayerInfo = PlayerInfo.CreateFromJSON(json);
+            if(thisPlayerInfo.data.multiplayer.chatLobbyId!=null)
             thisPlayerInfo.data.multiplayer.chatLobbyId = thisPlayerInfo.data.multiplayer.chatLobbyId.Substring(0, 5);
-        Debug.Log(json);
+            Debug.Log(json);
         
-        Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.selectedPlayer);
+            Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.selectedPlayer);
         if (thisPlayerInfo.data.assets.Count == 0)
             {
                 Debug.Log("buying default player");
