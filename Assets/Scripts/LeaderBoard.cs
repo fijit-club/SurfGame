@@ -21,7 +21,7 @@ public class LeaderBoard : MonoBehaviour
     private void Start()
     {
         pv = GetComponent<PhotonView>();
-        parent = GameObject.Find("Game UI Reference").GetComponent<Transform>();
+        parent = GameObject.Find("GameUIReference").GetComponent<Transform>();
 
         LeaderBoardDisplay();
         slider.minValue = 0f;

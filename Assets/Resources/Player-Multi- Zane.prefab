@@ -10014,6 +10014,8 @@ MonoBehaviour:
   deadEffect: {fileID: 8115609564230507778}
   shieldAnim: {fileID: 199044366985557019}
   shieldAura: {fileID: 5615869947399882533}
+  swipeRightAnim: {fileID: 2581325913200447533, guid: cdf1fa765625fe24da5a0ad904e436a9, type: 3}
+  swipeLeftAnim: {fileID: 2093714256356240045, guid: 1d14f0a054f60564cb596bc5426104f6, type: 3}
 --- !u!114 &4812510591227438006
 MonoBehaviour:
   m_ObjectHideFlags: 0

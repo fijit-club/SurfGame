@@ -61,6 +61,11 @@ public class SinglePlayerController : MonoBehaviour
     private GameObject lastLifeIndication;
     private int remainingLife = 3;
     private GameObject healthSymbols;
+    private RectTransform parent;
+
+    public GameObject swipeRightAnim;
+    public GameObject swipeLeftAnim;
+    private GameObject jumpTapAnim;
 
     private void Awake()
     {
@@ -106,6 +111,15 @@ public class SinglePlayerController : MonoBehaviour
         coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
         healthSymbols = GameObject.Find("HealthSymbols");
         lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
+        parent = GameObject.Find("GameUIReference").gameObject.GetComponent<RectTransform>();
+        if (Shop.Instance.selectedSea == 0)
+        {
+            jumpTapAnim = GameObject.Find("TapAnim").gameObject;
+        }
+        else
+        {
+            jumpTapAnim = GameObject.Find("TapAnimDark").gameObject;
+        }
         for (int i = 0; i < 3; i++)
         {
             lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
@@ -184,6 +198,22 @@ public class SinglePlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Shop.Instance.isTutorial)
+        {
+            if (collision.CompareTag("First"))
+            {
+                Destroy(Instantiate(swipeRightAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Second"))
+            {
+                Destroy(Instantiate(swipeLeftAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Third"))
+            {
+                Destroy(jumpTapAnim,3f);
+            }
+        }
+
         if (collision.CompareTag("Obstacle"))
         {
             if (isShieldActivated)
@@ -505,5 +535,15 @@ public class SinglePlayerController : MonoBehaviour
     public int GetCoins()
     {
         return coins;
+    }
+
+    public void Stop()
+    {
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    public void Move()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
     }
 }

@@ -38,6 +38,8 @@ public class Shop : MonoBehaviour
     public GameObject[] seaIcons;
     public GameObject[] seaIconsRoom;
 
+    public bool isTutorial;
+
     public void Awake()
     {
         Instance = this;
@@ -47,6 +49,15 @@ public class Shop : MonoBehaviour
     {
         //ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
         PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
+        if (Bridge.GetInstance().thisPlayerInfo.highScore <= 0)
+        {
+            isTutorial = true;
+        }
+        else
+        {
+            isTutorial = false;
+        }
+
     }
 
     public void play()

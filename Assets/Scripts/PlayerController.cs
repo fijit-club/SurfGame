@@ -59,6 +59,12 @@ public class PlayerController : MonoBehaviour
     private int remainingLife = 3;
     private GameObject healthSymbols;
 
+    private RectTransform parent;
+
+    public GameObject swipeRightAnim;
+    public GameObject swipeLeftAnim;
+    private GameObject jumpTapAnim;
+
     private void Awake()
     {
         Instance = this;
@@ -84,7 +90,7 @@ public class PlayerController : MonoBehaviour
         direction = Vector2.down;
         speed = baseSpeed;
         lastSpeedIncreaseTime = Time.time;
-        octopus= GameObject.FindWithTag("Monster");
+        octopus = GameObject.FindWithTag("Monster");
     }
 
     private void Start()
@@ -104,6 +110,16 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
+        }
+
+        parent = GameObject.Find("GameUIReference").gameObject.GetComponent<RectTransform>();
+        if (Shop.Instance.selectedSea == 0)
+        {
+            jumpTapAnim = GameObject.Find("TapAnim").gameObject;
+        }
+        else
+        {
+            jumpTapAnim = GameObject.Find("TapAnimDark").gameObject;
         }
     }
 
@@ -145,7 +161,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
-        score += (rb.velocity.magnitude*Time.deltaTime)*10*scoreMultiplier;
+        score += (rb.velocity.magnitude * Time.deltaTime) * 10 * scoreMultiplier;
 
         gameObject.GetComponent<PhotonView>().RPC("UpdateScoreOnServer", RpcTarget.All, score);
 
@@ -154,7 +170,7 @@ public class PlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
-       // RotateShieldAroundPlayer();
+        // RotateShieldAroundPlayer();
     }
 
     private IEnumerator PlayRandomAudio(AudioClip[] audios)
@@ -229,6 +245,22 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if (Shop.Instance.isTutorial)
+        {
+            if (collision.CompareTag("First"))
+            {
+                Destroy(Instantiate(swipeRightAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Second"))
+            {
+                Destroy(Instantiate(swipeLeftAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Third"))
+            {
+                Destroy(jumpTapAnim, 3f);
+            }
+        }
+
         if (collision.CompareTag("Obstacle"))
         {
             if (isShieldActivated)
@@ -282,7 +314,7 @@ public class PlayerController : MonoBehaviour
                 }
                 RandomAudios();
             }
-          
+
         }
         if (collision.CompareTag("Monster"))
         {
@@ -296,15 +328,15 @@ public class PlayerController : MonoBehaviour
                 gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
                 gameEndSounds.Play();
             }
-           
+
             UpdateDeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += 10*coinMultiplier;
-            GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
+            coins += 10 * coinMultiplier;
+            GameManager.Instance.CoinAnimation(coinMultiplier, collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
@@ -330,7 +362,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SlowMove()
     {
-        speed = baseSpeed/2;
+        speed = baseSpeed / 2;
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
     }
@@ -339,7 +371,7 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(OffCollider(4));
         isFlying = true;
-        speed = baseSpeed*2;
+        speed = baseSpeed * 2;
         direction = Vector2.down;
         SpriteSwap(false, false, false, true);
         transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
@@ -358,7 +390,7 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.75f && !isFlying)
         {
             SpriteSwap(true, false, false, false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -436,7 +468,7 @@ public class PlayerController : MonoBehaviour
     }
 
     [PunRPC]
-    private  void ActivateLeftImage(bool activate)
+    private void ActivateLeftImage(bool activate)
     {
         leftImgae.SetActive(activate);
     }

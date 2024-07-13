@@ -1315,6 +1315,7 @@ MonoBehaviour:
   seaIconsRoom:
   - {fileID: 1797560563}
   - {fileID: 25964208}
+  isTutorial: 0
 --- !u!4 &375347311
 Transform:
   m_ObjectHideFlags: 0
@@ -5041,7 +5042,7 @@ MonoBehaviour:
     coins: 1894
     sound: 1
     vibration: 1
-    highScore: 1000
+    highScore: 0
     data:
       assets:
       - id: player-1

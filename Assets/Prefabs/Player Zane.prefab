@@ -10011,7 +10011,10 @@ MonoBehaviour:
   deadEffect: {fileID: 8115609564230507778}
   shieldAnim: {fileID: 199044366985557019}
   shieldAura: {fileID: 6459461500300289058}
-  sheidPopUp: {fileID: 0}
+  sheidPopUp: {fileID: 6770740014391209672, guid: 66ae472104e7a84418804bca871a22ab, type: 3}
+  swipeRightAnim: {fileID: 2581325913200447533, guid: cdf1fa765625fe24da5a0ad904e436a9, type: 3}
+  swipeLeftAnim: {fileID: 2093714256356240045, guid: 1d14f0a054f60564cb596bc5426104f6, type: 3}
+  jumpTapAnim: {fileID: 0}
 --- !u!82 &8490932267505130436
 AudioSource:
   m_ObjectHideFlags: 0
