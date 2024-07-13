@@ -22,6 +22,8 @@ public class SoundManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+
     }
 
     private void Start()
@@ -100,8 +102,11 @@ public class SoundManager : MonoBehaviour
         PurchaseFail,
         EndGame,
         SpeedBoost,
-        CoinPick
+        CoinPick,
+        AvaAir,
+        BgmCapslock
     }
+    
 
     [Serializable]
     public class SoundAudioClip

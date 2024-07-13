@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     public GameObject jumpImgae;
     public GameObject deadEffect;
     public GameObject shieldAnim;
+    public GameObject shieldAura;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -57,6 +58,12 @@ public class PlayerController : MonoBehaviour
     private GameObject lastLifeIndication;
     private int remainingLife = 3;
     private GameObject healthSymbols;
+
+    private RectTransform parent;
+
+    public GameObject swipeRightAnim;
+    public GameObject swipeLeftAnim;
+    private GameObject jumpTapAnim;
 
     private void Awake()
     {
@@ -83,10 +90,40 @@ public class PlayerController : MonoBehaviour
         direction = Vector2.down;
         speed = baseSpeed;
         lastSpeedIncreaseTime = Time.time;
-        octopus= GameObject.FindWithTag("Monster");
+        octopus = GameObject.FindWithTag("Monster");
     }
 
     private void Start()
+    {
+        RandomAudios();
+
+        float orthoSize = mainCamera.orthographicSize;
+        camHalfWidth = orthoSize / 2;
+        SpriteSwap(true, false, false, false);
+        Instantiate(octopus);
+
+        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
+        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
+        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        healthSymbols = GameObject.Find("HealthSymbols");
+        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
+        for (int i = 0; i < 3; i++)
+        {
+            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
+        }
+
+        parent = GameObject.Find("GameUIReference").gameObject.GetComponent<RectTransform>();
+        if (Shop.Instance.selectedSea == 0)
+        {
+            jumpTapAnim = GameObject.Find("TapAnim").gameObject;
+        }
+        else
+        {
+            jumpTapAnim = GameObject.Find("TapAnimDark").gameObject;
+        }
+    }
+
+    private void RandomAudios()
     {
         if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 0)
         {
@@ -112,21 +149,6 @@ public class PlayerController : MonoBehaviour
         {
             randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
         }
-
-        float orthoSize = mainCamera.orthographicSize;
-        camHalfWidth = orthoSize / 2;
-        SpriteSwap(true, false, false, false);
-        Instantiate(octopus);
-
-        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
-        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
-        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
-        healthSymbols = GameObject.Find("HealthSymbols");
-        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
-        for (int i = 0; i < 3; i++)
-        {
-            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
-        }
     }
 
     private void FixedUpdate()
@@ -139,7 +161,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = direction * speed * Time.deltaTime;
         RestrictMovement();
         FollowPlayer();
-        score += (rb.velocity.magnitude*Time.deltaTime)*10*scoreMultiplier;
+        score += (rb.velocity.magnitude * Time.deltaTime) * 10 * scoreMultiplier;
 
         gameObject.GetComponent<PhotonView>().RPC("UpdateScoreOnServer", RpcTarget.All, score);
 
@@ -148,7 +170,7 @@ public class PlayerController : MonoBehaviour
             IncreaseSpeed();
             lastSpeedIncreaseTime = Time.time;
         }
-       // RotateShieldAroundPlayer();
+        // RotateShieldAroundPlayer();
     }
 
     private IEnumerator PlayRandomAudio(AudioClip[] audios)
@@ -171,13 +193,15 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator ShildActivation()
     {
+        GameManager.Instance.ShieldPopUp();
         shieldAnim.SetActive(true);
+        shieldAura.SetActive(true);
         isShieldActivated = true;
         yield return new WaitForSeconds(6f);
         shieldAnim.SetActive(false);
+        shieldAura.SetActive(false);
         isShieldActivated = false;
     }
-
 
     [PunRPC]
     void UpdateScoreOnServer(float newScore)
@@ -189,7 +213,7 @@ public class PlayerController : MonoBehaviour
 
     private void IncreaseSpeed()
     {
-        baseSpeed += 20f;
+        baseSpeed += 35f;
         speed = baseSpeed;
     }
 
@@ -219,6 +243,22 @@ public class PlayerController : MonoBehaviour
         if (gameObject.GetComponent<PhotonView>().IsMine == false && PhotonNetwork.IsConnected == true)
         {
             return;
+        }
+
+        if (Shop.Instance.isTutorial)
+        {
+            if (collision.CompareTag("First"))
+            {
+                Destroy(Instantiate(swipeRightAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Second"))
+            {
+                Destroy(Instantiate(swipeLeftAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Third"))
+            {
+                Destroy(jumpTapAnim, 3f);
+            }
         }
 
         if (collision.CompareTag("Obstacle"))
@@ -264,6 +304,17 @@ public class PlayerController : MonoBehaviour
                 StopCoroutine(SpeedMove());
             }
             speedMoveCoroutine = StartCoroutine(SpeedMove());
+            if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 1)
+            {
+                SoundManager.Instance.PlaySound(SoundManager.Sounds.AvaAir);
+
+                if (randomAudioCoroutine != null)
+                {
+                    StopCoroutine(randomAudioCoroutine);
+                }
+                RandomAudios();
+            }
+
         }
         if (collision.CompareTag("Monster"))
         {
@@ -272,16 +323,20 @@ public class PlayerController : MonoBehaviour
             {
                 StopCoroutine(randomAudioCoroutine);
             }
-            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
-            gameEndSounds.Play();
+            if (SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer] != null)
+            {
+                gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+                gameEndSounds.Play();
+            }
+
             UpdateDeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += 5*coinMultiplier;
-            GameManager.Instance.CoinAnimation(coinMultiplier,collision.transform.position);
+            coins += 10 * coinMultiplier;
+            GameManager.Instance.CoinAnimation(coinMultiplier, collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
         }
@@ -307,7 +362,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SlowMove()
     {
-        speed = baseSpeed/2;
+        speed = baseSpeed / 2;
         yield return new WaitForSeconds(3f);
         speed = baseSpeed;
     }
@@ -316,7 +371,7 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(OffCollider(4));
         isFlying = true;
-        speed = baseSpeed*2;
+        speed = baseSpeed * 2;
         direction = Vector2.down;
         SpriteSwap(false, false, false, true);
         transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
@@ -330,12 +385,12 @@ public class PlayerController : MonoBehaviour
 
     private void RestrictMovement()
     {
-        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
+        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.75f, camHalfWidth - 0.75f), transform.position.y);
 
-        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
+        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.75f && !isFlying)
         {
             SpriteSwap(true, false, false, false);
-            transform.GetChild(0).rotation = Quaternion.Euler(0, 0,0);
+            transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -413,7 +468,7 @@ public class PlayerController : MonoBehaviour
     }
 
     [PunRPC]
-    private  void ActivateLeftImage(bool activate)
+    private void ActivateLeftImage(bool activate)
     {
         leftImgae.SetActive(activate);
     }
@@ -507,8 +562,11 @@ public class PlayerController : MonoBehaviour
             {
                 StopCoroutine(randomAudioCoroutine);
             }
-            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
-            gameEndSounds.Play();
+            if (SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer] != null)
+            {
+                gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+                gameEndSounds.Play();
+            }
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }
