@@ -25,14 +25,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 2)
-        {
+        
             SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BgmCapslock);
-        }
-        else
-        {
-            SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
-        }
+        
+        //else
+        //{
+          //  SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+        //}
         
         StartCoroutine(StartTimer());
     }
