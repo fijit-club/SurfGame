@@ -29,10 +29,16 @@ public class Shop : MonoBehaviour
     public GameObject[] playerPrefabs;
     public GameObject[] playerPowers;
 
+    public Sprite[] menuBgs;
+    public Image bgImgageSinglePlayer;
+    public Image bgImgageMultiPlayer;
+
 
     public int selectedSea;
     public GameObject[] seaIcons;
     public GameObject[] seaIconsRoom;
+
+    public bool isTutorial;
 
     public void Awake()
     {
@@ -43,6 +49,15 @@ public class Shop : MonoBehaviour
     {
         //ShowSaveData(Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer);
         PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "selectedSea", 0 } });
+        if (Bridge.GetInstance().thisPlayerInfo.highScore <= 0)
+        {
+            isTutorial = true;
+        }
+        else
+        {
+            isTutorial = false;
+        }
+
     }
 
     public void play()
@@ -58,7 +73,7 @@ public class Shop : MonoBehaviour
     public void ShowSaveData(int value)
     {
         itemName = playerNames[value];
-        itemNameTxt.text = itemNames[value];
+        itemNameTxt.text = playerNames[value];
         itemDiscriptionTxt.text = itemDsicriptions[value];
         ShowPovwerUpStats(value);
         selectedPlayer = value;
@@ -102,6 +117,13 @@ public class Shop : MonoBehaviour
 
             seaIconsRoom[0].SetActive(true);
             seaIconsRoom[1].SetActive(false);
+
+            bgImgageSinglePlayer.sprite = menuBgs[0];
+
+            if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize > 1)
+            {
+                GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 0);
+            }
         }
         else
         {
@@ -112,8 +134,20 @@ public class Shop : MonoBehaviour
 
             seaIconsRoom[0].SetActive(false);
             seaIconsRoom[1].SetActive(true);
-        }
 
+            bgImgageSinglePlayer.sprite = menuBgs[1];
+
+            if (Bridge.GetInstance().thisPlayerInfo.data.multiplayer.lobbySize > 1)
+            {
+                GetComponent<PhotonView>().RPC("UpdateMultiplayerBackground", RpcTarget.All, 1);
+            }
+        }
+    }
+
+    [PunRPC]
+    private void UpdateMultiplayerBackground(int bgIndex)
+    {
+        bgImgageMultiPlayer.sprite = menuBgs[bgIndex];
     }
 
     public void SelectedCar()
@@ -202,6 +236,7 @@ public class Shop : MonoBehaviour
                 useBtn.SetActive(true);
                 buyBtn.SetActive(false);
             }
+            Bridge.GetInstance().SaveData(selectedPlayer);
         }
     }
 

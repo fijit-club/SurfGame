@@ -83,7 +83,7 @@ public class NativeAPI
         private static Bridge instance;
         public int coinsCollected = 0;
         public bool testing;
-
+    int tempScore = 0;
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
         private static extern void setScore(int score);
@@ -154,8 +154,7 @@ public class NativeAPI
 #if UNITY_WEBGL && !UNITY_EDITOR
             load();
 #endif
-
-            }
+        }
             else
                 Destroy(this);
 
@@ -197,7 +196,27 @@ public class NativeAPI
 
         public void SendScore(int score)
         {
+        tempScore = score;
+        Invoke("SendScoreDelayed", 4f);
+        Debug.Log("here 2"+ score+"  "+tempScore);
+        }
 
+         void SendScoreDelayed()
+         {
+            Debug.Log(coinsCollected + "sent coin");
+#if UNITY_WEBGL && !UNITY_EDITOR
+            updateCoins(coinsCollected);
+#endif
+#if UNITY_WEBGL && !UNITY_EDITOR
+
+            setScore(tempScore);
+#elif UNITY_EDITOR
+            Debug.Log("sendingscore" + tempScore);
+#endif
+
+         }
+     public void SendScoreDelayed(int score)
+         {
             Debug.Log(coinsCollected + "sent coin");
 #if UNITY_WEBGL && !UNITY_EDITOR
             updateCoins(coinsCollected);
@@ -208,7 +227,8 @@ public class NativeAPI
 #elif UNITY_EDITOR
             Debug.Log("sendingscore" + score);
 #endif
-        }
+
+         }
 
         public void Mute()
         {
@@ -231,13 +251,15 @@ public class NativeAPI
         public void SendInitialData(string json)
         {
             thisPlayerInfo = PlayerInfo.CreateFromJSON(json);
+            if(thisPlayerInfo.data.multiplayer.chatLobbyId!=null)
+            thisPlayerInfo.data.multiplayer.chatLobbyId = thisPlayerInfo.data.multiplayer.chatLobbyId.Substring(0, 5);
             Debug.Log(json);
         
-        Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.selectedPlayer);
+            Shop.Instance.ShowSaveData(thisPlayerInfo.data.saveData.selectedPlayer);
         if (thisPlayerInfo.data.assets.Count == 0)
             {
                 Debug.Log("buying default player");
-                BuyPete("surf-ava");
+               // BuyPete("surf-ava");
             }
 
             if (thisPlayerInfo.sound)
@@ -249,9 +271,10 @@ public class NativeAPI
             Mute();
 
             }
-            //Replay();
-            //Events.CoinsCountChanged.Call();
-        }
+        //Replay();
+        //Events.CoinsCountChanged.Call();
+       
+    }
 
         public void AddCoin()
         {
@@ -325,7 +348,7 @@ public class NativeAPI
     [ContextMenu("SinglePlayer")]
     public void Testing()
     {
-        SendInitialData("{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":null,\"multiplayer\":null},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
+        SendInitialData("{\"coins\":1894,\"data\":{\"assets\":[{\"attributes\":[],\"id\":\"player-1\"},{\"attributes\":[],\"id\":\"knife-hit-knife-20\"}],\"saveData\":{\"selectedPlayer\":1},\"multiplayer\":null},\"highScore\":1000,\"sound\":true,\"vibration\":true}");
     }
 
 

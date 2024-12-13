@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameOVerScreen;
     public TextMeshProUGUI startTimerTxt;
     public GameObject wasteCollectEffect;
+    public GameObject sheidPopUp;
     public bool isGameOver;
 
     private void Awake()
@@ -24,7 +25,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+        
+            SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BgmCapslock);
+        
+        //else
+        //{
+          //  SoundManager.Instance.PlaySoundLoop(SoundManager.Sounds.BGM);
+        //}
+        
         StartCoroutine(StartTimer());
     }
 
@@ -56,6 +64,11 @@ public class GameManager : MonoBehaviour
             //SoundManager.Instance.PlaySound(SoundManager.Sounds.EndGame);
             gameOVerScreen.SetActive(true);
         }
+    }
+
+    public void ShieldPopUp()
+    {
+        Destroy(Instantiate(sheidPopUp, parent), 2f);
     }
 
 

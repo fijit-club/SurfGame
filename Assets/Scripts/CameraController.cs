@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
     {
         if (follow)
         {
-            transform.position = new Vector3(0, player.transform.position.y, -10);
+            transform.position = new Vector3(0, player.transform.position.y-1f, -10);
         }
 
     }

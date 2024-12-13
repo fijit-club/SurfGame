@@ -13,6 +13,11 @@ TagManager:
   - Waste
   - BG
   - Shield
+  - Tutorial
+  - First
+  - Second
+  - Third
+  - End
   layers:
   - Default
   - TransparentFX

@@ -45,6 +45,8 @@ public class SinglePlayerController : MonoBehaviour
     public GameObject jumpImgae;
     public GameObject deadEffect;
     public GameObject shieldAnim;
+    public GameObject shieldAura;
+    public GameObject sheidPopUp;
 
     private bool canTouchControll;
     private bool isChasing;
@@ -59,6 +61,11 @@ public class SinglePlayerController : MonoBehaviour
     private GameObject lastLifeIndication;
     private int remainingLife = 3;
     private GameObject healthSymbols;
+    private RectTransform parent;
+
+    public GameObject swipeRightAnim;
+    public GameObject swipeLeftAnim;
+    private GameObject jumpTapAnim;
 
     private void Awake()
     {
@@ -92,6 +99,35 @@ public class SinglePlayerController : MonoBehaviour
     private void Start()
     {
 
+        RandomAudios();
+
+        float orthoSize = mainCamera.orthographicSize;
+        camHalfWidth = orthoSize / 2;
+        SpriteSwap(true, false, false, false);
+        Instantiate(octopus);
+
+        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
+        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
+        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
+        healthSymbols = GameObject.Find("HealthSymbols");
+        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
+        parent = GameObject.Find("GameUIReference").gameObject.GetComponent<RectTransform>();
+        if (Shop.Instance.selectedSea == 0)
+        {
+            jumpTapAnim = GameObject.Find("TapAnim").gameObject;
+        }
+        else
+        {
+            jumpTapAnim = GameObject.Find("TapAnimDark").gameObject;
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
+        }
+    }
+
+    private void RandomAudios()
+    {
         if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 0)
         {
             randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
@@ -116,21 +152,6 @@ public class SinglePlayerController : MonoBehaviour
         {
             randomAudioCoroutine = StartCoroutine(PlayRandomAudio(SoundManager.Instance.randomJack));
         }
-
-        float orthoSize = mainCamera.orthographicSize;
-        camHalfWidth = orthoSize / 2;
-        SpriteSwap(true, false, false, false);
-        Instantiate(octopus);
-
-        scoreTxt = GameObject.Find("GameScore").GetComponent<TextMeshProUGUI>();
-        highScoreTxt = GameObject.Find("GameHighScore").GetComponent<TextMeshProUGUI>();
-        coinTxt = GameObject.Find("GameCoins").GetComponent<TextMeshProUGUI>();
-        healthSymbols = GameObject.Find("HealthSymbols");
-        lastLifeIndication = GameObject.Find("LastHealthIndication").gameObject;
-        for (int i = 0; i < 3; i++)
-        {
-            lifes.Add(healthSymbols.transform.GetChild(i).gameObject);
-        }
     }
 
     private void FixedUpdate()
@@ -153,7 +174,7 @@ public class SinglePlayerController : MonoBehaviour
 
     private void IncreaseSpeed()
     {
-        baseSpeed += 20f;
+        baseSpeed += 35f;
         speed = baseSpeed;
     }
 
@@ -177,6 +198,22 @@ public class SinglePlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Shop.Instance.isTutorial)
+        {
+            if (collision.CompareTag("First"))
+            {
+                Destroy(Instantiate(swipeRightAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Second"))
+            {
+                Destroy(Instantiate(swipeLeftAnim, parent), 3f);
+            }
+            if (collision.CompareTag("Third"))
+            {
+                Destroy(jumpTapAnim,3f);
+            }
+        }
+
         if (collision.CompareTag("Obstacle"))
         {
             if (isShieldActivated)
@@ -220,6 +257,17 @@ public class SinglePlayerController : MonoBehaviour
                 StopCoroutine(SpeedMove());
             }
             speedMoveCoroutine = StartCoroutine(SpeedMove());
+            if (Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer == 1)
+            {
+                SoundManager.Instance.PlaySound(SoundManager.Sounds.AvaAir);
+
+                if (randomAudioCoroutine != null)
+                {
+                    StopCoroutine(randomAudioCoroutine);
+                }
+                RandomAudios();
+            }
+          
         }
         if (collision.CompareTag("Monster"))
         {
@@ -228,15 +276,18 @@ public class SinglePlayerController : MonoBehaviour
             {
                 StopCoroutine(randomAudioCoroutine);
             }
-            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
-            gameEndSounds.Play();
+            if (SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer] != null)
+            {
+                gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+                gameEndSounds.Play();
+            }
             DeadEffect();
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }
         if (collision.CompareTag("Waste"))
         {
-            coins += 5 * coinMultiplier;
+            coins += 10 * coinMultiplier;
             GameManager.Instance.CoinAnimation(coinMultiplier, collision.transform.position);
             SoundManager.Instance.PlaySound(SoundManager.Sounds.CoinPick);
             Destroy(collision.gameObject);
@@ -273,10 +324,13 @@ public class SinglePlayerController : MonoBehaviour
 
     private IEnumerator ShildActivation()
     {
+        GameManager.Instance.ShieldPopUp();
         shieldAnim.SetActive(true);
+        shieldAura.SetActive(true);
         isShieldActivated = true;
         yield return new WaitForSeconds(6f);
         shieldAnim.SetActive(false);
+        shieldAura.SetActive(false);
         isShieldActivated = false;
     }
 
@@ -313,9 +367,9 @@ public class SinglePlayerController : MonoBehaviour
 
     private void RestrictMovement()
     {
-        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.5f, camHalfWidth - 0.5f), transform.position.y);
+        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -camHalfWidth + 0.75f, camHalfWidth - 0.75f), transform.position.y);
 
-        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.5f && !isFlying)
+        if (Mathf.Abs(transform.position.x) >= camHalfWidth - 0.75f && !isFlying)
         {
             SpriteSwap(true, false, false, false);
             transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
@@ -459,8 +513,11 @@ public class SinglePlayerController : MonoBehaviour
             {
                 StopCoroutine(randomAudioCoroutine);
             }
-            gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
-            gameEndSounds.Play();
+            if (SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer] != null)
+            {
+                gameEndSounds.clip = SoundManager.Instance.endAudios[Bridge.GetInstance().thisPlayerInfo.data.saveData.selectedPlayer];
+                gameEndSounds.Play();
+            }
             canTouchControll = false;
             Bridge.GetInstance().SendScore(GetScore());
         }
@@ -478,5 +535,15 @@ public class SinglePlayerController : MonoBehaviour
     public int GetCoins()
     {
         return coins;
+    }
+
+    public void Stop()
+    {
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    public void Move()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
     }
 }
